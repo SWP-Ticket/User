@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 'use client';
 
 import React, { type FormEvent } from 'react';
@@ -13,7 +14,9 @@ import Button from '@components/Button/Button';
 import Loader from '@components/Loader/Loader';
 
 // utils
-import Request, { type IRequest, type IResponse } from '@utils/Request';
+
+import { useRouter } from 'next/navigation';
+import { AuthenApi } from 'api';
 
 // interfaces
 interface IFormProps {
@@ -22,8 +25,8 @@ interface IFormProps {
 }
 
 const Form = (): React.JSX.Element => {
+  const router = useRouter();
   const { showAlert, hideAlert } = useAlert();
-
   const [loading, setLoading] = React.useState<boolean>(false);
   const [formValues, setFormValues] = React.useState<IFormProps>({
     email: '',
@@ -32,8 +35,6 @@ const Form = (): React.JSX.Element => {
 
   /**
    * Handles the change event for input fields in the form.
-   *
-   * This function is called when the value of an input field in the form changes. It updates the state of the form values with the new value.
    *
    * @param {React.ChangeEvent<HTMLInputElement>} e - The change event.
    */
@@ -49,38 +50,34 @@ const Form = (): React.JSX.Element => {
   /**
    * Handles the form submission event.
    *
-   * This function is called when the form is submitted. It prevents the default form submission behavior,
-   * hides any existing alert, sets the loading state to true, sends a POST request to the signin/password endpoint,
-   * and handles the response. If the response status is 200, it does nothing. If the status is not 200, it shows an error alert.
-   * Finally, it sets the loading state back to false.
-   *
    * @param {FormEvent<HTMLFormElement>} e - The form submission event.
-   * @returns {Promise<any>} A promise that resolves when the request is complete.
+   * @returns {Promise<void>} A promise that resolves when the request is complete.
    */
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    try {
+      e.preventDefault();
 
-    hideAlert();
+      hideAlert();
 
-    setLoading(true);
+      setLoading(true);
 
-    const parameters: IRequest = {
-      url: 'v1/signin/password',
-      method: 'POST',
-      postData: {
+      const authenApi = new AuthenApi();
+      const response = await authenApi.apiAuthenLoginPost({
         email: formValues.email,
         password: formValues.password,
-      },
-    };
-
-    const req: IResponse = await Request.getResponse(parameters);
-
-    const { status, data } = req;
-
-    if (status === 200) {
-      // Handle successful response
-    } else {
-      showAlert({ type: 'error', text: data.title ?? '' });
+      });
+      console.log(response);
+      showAlert({ type: 'success', text: 'Login successful' });
+      // @ts-ignore
+      sessionStorage.setItem('token', response.data.token);
+      // @ts-ignore
+      sessionStorage.setItem('role', response.data.role);
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+    } catch (error: any) {
+      console.log(error.response.data.errorMessages);
+      showAlert({ type: 'error', text: error.response.data.errorMessages });
     }
 
     setLoading(false);

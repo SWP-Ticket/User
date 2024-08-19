@@ -11,12 +11,13 @@ import useClickOutside from '@hooks/useClickOutside';
 import Dropdown from '@components/Dropdown/Dropdown';
 import DropdownItem from '@components/Dropdown/DropdownItem';
 import ProfilePhoto from '@components/Profile/ProfilePhoto';
-
+import ButtonLink from '@components/Button/ButtonLink';
 const Header = (): React.JSX.Element => {
   const wrapperRef = React.useRef<any>();
 
   const [menu, setMenu] = React.useState<boolean>(false);
   const [dropdown, setDropdown] = React.useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
 
   /**
    * This is a functional component for the Header.
@@ -33,6 +34,15 @@ const Header = (): React.JSX.Element => {
   const menuState = (): void => {
     setMenu((state) => !state);
   };
+  React.useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = sessionStorage.getItem('token'); // Or use sessionStorage based on your requirement
+      console.log(token);
+      setIsLoggedIn(!!token); // Set login status based on the presence of token
+    };
+
+    checkLoginStatus();
+  }, []);
 
   return (
     <header>
@@ -64,33 +74,40 @@ const Header = (): React.JSX.Element => {
           </Link>
         </div>
         <div className='members' ref={wrapperRef}>
-          {/* <Link href='/members/signup' className='blue'>
-            Sign up
-          </Link>
-          <span>or</span>
-          <ButtonLink color='blue-filled' text='Sign in' url={`members/signin`} /> */}
-          <Link href='/members/account'>
-            <ProfilePhoto image='https://www.cenksari.com/content/profile.jpg' size='small' />
-          </Link>
-          <button
-            type='button'
-            className='menu-opener'
-            onClick={() => {
-              setDropdown(!dropdown);
-            }}
-          >
-            Cenk
-            <span className='material-symbols-outlined'>
-              {dropdown ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
-            </span>
-          </button>
-          {dropdown && (
-            <Dropdown color='gray'>
-              <DropdownItem url='members/tickets' text='My tickets' />
-              <DropdownItem url='members/account' text='My account' />
-              <hr />
-              <DropdownItem url='members/signout' text='Sign out' />
-            </Dropdown>
+          {isLoggedIn ? (
+            <div className='profile'>
+              <Link href='/members/account'>
+                <ProfilePhoto image='https://www.cenksari.com/content/profile.jpg' size='small' />
+              </Link>
+              <button
+                type='button'
+                className='menu-opener'
+                onClick={() => {
+                  setDropdown(!dropdown);
+                }}
+              >
+                Cenk
+                <span className='material-symbols-outlined'>
+                  {dropdown ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
+                </span>
+              </button>
+              {dropdown && (
+                <Dropdown color='gray'>
+                  <DropdownItem url='members/tickets' text='My tickets' />
+                  <DropdownItem url='members/account' text='My account' />
+                  <hr />
+                  <DropdownItem url='members/signout' text='Sign out' />
+                </Dropdown>
+              )}
+            </div>
+          ) : (
+            <div className='signin'>
+              <Link href='/members/signup' className='blue'>
+                Sign up
+              </Link>
+              <span>or</span>
+              <ButtonLink color='blue-filled' text='Sign in' url={`members/signin`} />
+            </div>
           )}
         </div>
       </div>

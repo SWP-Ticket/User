@@ -9,15 +9,25 @@ import ButtonLink from '@components/Button/ButtonLink';
 // interfaces
 interface IProps {
   url: string;
-  from: string;
+
   when: string;
   name: string;
   venue: string;
   image: string;
   color: string;
+  status: string;
 }
 
-const EventCard = ({ url, from, when, name, venue, image, color }: IProps): React.JSX.Element => (
+const EventCard = ({
+  url,
+
+  when,
+  name,
+  venue,
+  image,
+  color,
+  status,
+}: IProps): React.JSX.Element => (
   <div className='card'>
     <Link href={`/event/${url}`}>
       <div className='card-title'>
@@ -28,9 +38,7 @@ const EventCard = ({ url, from, when, name, venue, image, color }: IProps): Reac
         style={{
           backgroundImage: `url("${image}")`,
         }}
-      >
-        <Badge color={color} text='NEW' />
-      </div>
+      ></div>
       <div className='card-info'>
         <p>
           <span className='material-symbols-outlined'>event</span> {when}
@@ -38,10 +46,7 @@ const EventCard = ({ url, from, when, name, venue, image, color }: IProps): Reac
         <p>
           <span className='material-symbols-outlined'>apartment</span> {venue}
         </p>
-        <p>
-          <span className='material-symbols-outlined'>local_activity</span> from{' '}
-          <strong>£{from}</strong>
-        </p>
+        <strong>Status</strong> {status}
       </div>
     </Link>
     <div className='card-buttons'>

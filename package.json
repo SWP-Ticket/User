@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.2.5",
+    "@openapitools/openapi-generator-cli": "^2.13.4",
     "@types/base-64": "^1.0.2",
     "@types/node": "^22.1.0",
     "@types/react": "^18.3.3",

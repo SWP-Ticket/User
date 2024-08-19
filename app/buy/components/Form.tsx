@@ -11,9 +11,6 @@ import Button from '@components/Button/Button';
 import Loader from '@components/Loader/Loader';
 import Heading from '@components/Heading/Heading';
 
-// utils
-import Request, { type IRequest, type IResponse } from '@utils/Request';
-
 // interfaces
 interface IFormProps {
   name: string;
@@ -63,25 +60,6 @@ const Form = (): React.JSX.Element => {
     hideAlert();
 
     setLoading(true);
-
-    const parameters: IRequest = {
-      url: 'v1/signin/password',
-      method: 'POST',
-      postData: {
-        email: '',
-        password: '',
-      },
-    };
-
-    const req: IResponse = await Request.getResponse(parameters);
-
-    const { status, data } = req;
-
-    if (status === 200) {
-      //
-    } else {
-      showAlert({ type: 'error', text: data.title ?? '' });
-    }
 
     setLoading(false);
   };

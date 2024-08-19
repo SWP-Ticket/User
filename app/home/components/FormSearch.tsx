@@ -10,13 +10,13 @@ import Input from '@components/Form/Input';
 
 // interfaces
 interface IFormProps {
-  keyword: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>; // Add this prop
 }
 
-const FormSearch = (): React.JSX.Element => {
+const FormSearch: React.FC<IFormProps> = ({ setSearchTerm }) => {
   const { showAlert } = useAlert();
 
-  const [formValues, setFormValues] = React.useState<IFormProps>({
+  const [formValues, setFormValues] = React.useState({
     keyword: '',
   });
 
@@ -26,30 +26,26 @@ const FormSearch = (): React.JSX.Element => {
    * @param {React.ChangeEvent<HTMLInputElement>} e - The event object from the input change.
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
+    const { value } = e.target;
 
     setFormValues({
-      ...formValues,
-      [name]: value,
+      keyword: value,
     });
+
+    setSearchTerm(value); // Update the search term in the parent component
   };
 
   /**
    * Handles the form submission event.
    *
-   * Prevents the default form submission behavior, checks if the keyword input is valid (minimum 3 characters),
-   * and displays an error alert if the input is invalid.
+   * Prevents the default form submission behavior. Currently, this function only handles alerts,
+   * as the search is now triggered on input change.
    *
    * @param {FormEvent<HTMLFormElement>} e - The event object from the form submission.
    */
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-
-    const { keyword } = formValues;
-
-    if (keyword === '' || keyword.length < 3) {
-      showAlert({ type: 'error', text: 'Please enter minimum 3 characters for search.' });
-    }
+    // No longer handling validation here
   };
 
   return (
