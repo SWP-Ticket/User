@@ -167,6 +167,9 @@ header .container .links a {
 header .container .links a:hover {
   text-decoration: underline;
 }
+header .container .members .signin {
+  margin-right: 100px;
+}
 
 header .container .members {
   width: 250px;
@@ -1001,6 +1004,10 @@ td {
 
 .help-bottom .links {
   padding-bottom: 30px;
+  display: flex;
+  gap: 20px; /* Adjust spacing between links as needed */
+  margin: 0; /* Remove default margin if needed */
+  padding: 0; /* Remove default padding if needed */
 }
 
 .help-bottom .links a {

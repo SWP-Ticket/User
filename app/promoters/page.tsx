@@ -16,11 +16,6 @@ const Page = (): React.JSX.Element => (
       <div className='container'>
         <div className='padding-bottom center'>
           <Heading type={1} color='gray' text='Promoters' />
-          <p className='gray form-information'>
-            Whether you&apos;re selling one ticket or a hundred thousand, the Modern ticketing
-            infrastructure is designed to meet all your needs. Plus, there are no additional fees or
-            surprises added later!
-          </p>
         </div>
       </div>
     </Section>
@@ -29,11 +24,7 @@ const Page = (): React.JSX.Element => (
       <div className='container'>
         <div className='center'>
           <Heading type={5} color='gray' text='Manage everything with a single application' />
-          <p className='gray form-information'>
-            With our specially designed Promoter application, you can track ticket sales in
-            real-time and admit customers at the door with your barcode scanner. Plus, it&apos;s
-            free!
-          </p>
+
           <div className='button-container'>
             <ButtonLink
               text='Get started'
