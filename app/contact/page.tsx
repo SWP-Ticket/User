@@ -21,33 +21,7 @@ const Page = (): React.JSX.Element => (
         </div>
       </div>
     </Section>
-    <Section className='gray-background'>
-      <div className='container'>
-        <div className='center'>
-          <Heading type={5} color='gray' text='Customer service' />
-          <p className='gray form-information'>
-            Our customer service is available Monday through Friday from <strong>9:00 AM</strong> to{' '}
-            <strong>6:00 PM</strong>, and on weekends from <strong>10:00 AM</strong> to{' '}
-            <strong>6:00 PM</strong>. Please click the button below for live assistance.
-          </p>
-          <div className='button-container'>
-            <ButtonLink
-              color='gray-overlay'
-              text='Live assistance'
-              rightIcon='arrow_forward'
-              url=''
-            />
-            &nbsp; &nbsp;
-            <ButtonLink
-              color='gray-filled'
-              text='Drop us an e-mail'
-              rightIcon='arrow_forward'
-              url=''
-            />
-          </div>
-        </div>
-      </div>
-    </Section>
+
     <Section className='white-background'>
       <div className='container'>
         <div className='center'>
@@ -70,22 +44,20 @@ const Page = (): React.JSX.Element => (
             <p className='gray'>
               You can directly write us to
               <br />
-              <strong>hello@modern-ticketing.com</strong>
+              <strong>ticket@gmail.com</strong>
               <br />
               <br />
               or call us at
               <br />
-              <strong>+44 7445 5100000</strong>
+              <strong>+84 193834132</strong>
               <br />
               <br />
-              <strong>Our office address is</strong>
+              <strong>Our official address is</strong>
               <br />
-              233 North Road, Southbank, W2 2UL, London, UK
+              Unit 306, CC2 House, Bac Linh Dam New Urban
             </p>
           </div>
-          <div className='button-container'>
-            <ButtonLink color='blue-filled' text='Open maps' rightIcon='arrow_forward' url='' />
-          </div>
+          <div className='button-container'></div>
         </div>
       </div>
     </Section>

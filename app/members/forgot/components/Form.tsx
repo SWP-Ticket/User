@@ -9,13 +9,13 @@ import useAlert from '@hooks/useAlert';
 import Input from '@components/Form/Input';
 import Button from '@components/Button/Button';
 import Loader from '@components/Loader/Loader';
-
-// utils
-import Request, { type IRequest, type IResponse } from '@utils/Request';
+import { AuthenApi } from 'api';
 
 // interfaces
 interface IFormProps {
   email: string;
+  password: string;
+  confirmPassword: string;
 }
 
 const Form = (): React.JSX.Element => {
@@ -24,6 +24,8 @@ const Form = (): React.JSX.Element => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [formValues, setFormValues] = React.useState<IFormProps>({
     email: '',
+    password: '',
+    confirmPassword: '',
   });
 
   /**
@@ -55,45 +57,39 @@ const Form = (): React.JSX.Element => {
    */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-
     hideAlert();
+
+    if (formValues.password !== formValues.confirmPassword) {
+      showAlert({ type: 'error', text: 'Password does not match' });
+      return;
+    }
 
     setLoading(true);
 
-    const parameters: IRequest = {
-      url: 'v1/signin/password',
-      method: 'POST',
-      postData: {
-        email: '',
-        password: '',
-      },
-    };
-
-    const req: IResponse = await Request.getResponse(parameters);
-
-    const { status, data } = req;
-
-    if (status === 200) {
-      //
-    } else {
-      showAlert({ type: 'error', text: data.title ?? '' });
+    try {
+      const authenApi = new AuthenApi();
+      const response = await authenApi.apiAuthenResetPasswordPost({
+        email: formValues.email,
+        password: formValues.password,
+        confirmPassword: formValues.confirmPassword,
+      });
+      console.log(response);
+      // @ts-ignore
+      if (response.data.success) {
+        showAlert({ type: 'success', text: 'Reset successful!' });
+      } else {
+        showAlert({ type: 'error', text: 'Fail to reset password' });
+      }
+    } catch (error) {
+      showAlert({ type: 'error', text: 'There is an error' });
+    } finally {
+      setLoading(false);
+      window.location.href = '/';
     }
-
-    setLoading(false);
   };
 
-  if (loading) {
-    return <Loader type='inline' color='gray' text='Hang on a second' />;
-  }
-
   return (
-    <form
-      className='form shrink'
-      noValidate
-      onSubmit={(e) => {
-        void handleSubmit(e);
-      }}
-    >
+    <form className='form shrink' noValidate onSubmit={handleSubmit}>
       <div className='form-elements'>
         <div className='form-line'>
           <div className='one-line'>
@@ -111,9 +107,43 @@ const Form = (): React.JSX.Element => {
             />
           </div>
         </div>
+        <div className='form-line'>
+          <div className='one-line'>
+            <div className='label-line'>
+              <label htmlFor='password'>Password</label>
+            </div>
+            <Input
+              type='password'
+              name='password'
+              value={formValues.password}
+              maxLength={128}
+              placeholder='Enter your new password'
+              required
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className='form-line'>
+          <div className='one-line'>
+            <div className='label-line'>
+              <label htmlFor='confirmPassword'>Confirm Password</label>
+            </div>
+            <Input
+              type='password'
+              name='confirmPassword'
+              value={formValues.confirmPassword}
+              maxLength={128}
+              placeholder='Confirm your new password'
+              required
+              onChange={handleChange}
+            />
+          </div>
+        </div>
         <div className='form-buttons'>
           <Button type='submit' color='blue-filled' text='Reset password' />
         </div>
+
+        {loading && <Loader type='inline' color='blue' />}
       </div>
     </form>
   );
