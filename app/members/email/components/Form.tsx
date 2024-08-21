@@ -12,6 +12,7 @@ import Loader from '@components/Loader/Loader';
 import ButtonLink from '@components/Button/ButtonLink';
 
 // utils
+// @ts-ignore
 import Request, { type IRequest, type IResponse } from '@utils/Request';
 
 // interfaces

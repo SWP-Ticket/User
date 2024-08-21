@@ -14,7 +14,7 @@ import ProfilePhoto from '@components/Profile/ProfilePhoto';
 import ButtonLink from '@components/Button/ButtonLink';
 const Header = (): React.JSX.Element => {
   const wrapperRef = React.useRef<any>();
-
+  const [role, setRole] = React.useState<string | null>('');
   const [menu, setMenu] = React.useState<boolean>(false);
   const [dropdown, setDropdown] = React.useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
@@ -34,11 +34,19 @@ const Header = (): React.JSX.Element => {
   const menuState = (): void => {
     setMenu((state) => !state);
   };
+  const handleSignOut = () => {
+    sessionStorage.clear();
+
+    window.location.href = '/members/signout';
+  };
   React.useEffect(() => {
     const checkLoginStatus = () => {
-      const token = sessionStorage.getItem('token'); // Or use sessionStorage based on your requirement
+      const token = sessionStorage.getItem('token');
+      const role = sessionStorage.getItem('role');
+
       console.log(token);
-      setIsLoggedIn(!!token); // Set login status based on the presence of token
+      setRole(role);
+      setIsLoggedIn(!!token);
     };
 
     checkLoginStatus();
@@ -69,15 +77,17 @@ const Header = (): React.JSX.Element => {
           <Link href='/contact' className='gray'>
             Contact us
           </Link>
-          <Link href='/news' className='gray'>
-            News
-          </Link>
+          {role == 'Organizer' && (
+            <Link href='/create-event' className='gray'>
+              Create event
+            </Link>
+          )}
         </div>
         <div className='members' ref={wrapperRef}>
           {isLoggedIn ? (
             <div className='profile'>
               <Link href='/members/account'>
-                <ProfilePhoto image='https://www.cenksari.com/content/profile.jpg' size='small' />
+                <ProfilePhoto size='small' />
               </Link>
               <button
                 type='button'
@@ -96,7 +106,9 @@ const Header = (): React.JSX.Element => {
                   <DropdownItem url='members/tickets' text='My tickets' />
                   <DropdownItem url='members/account' text='My account' />
                   <hr />
-                  <DropdownItem url='members/signout' text='Sign out' />
+                  <button type='button' className='dropdown-item' onClick={handleSignOut}>
+                    Sign out
+                  </button>
                 </Dropdown>
               )}
             </div>
