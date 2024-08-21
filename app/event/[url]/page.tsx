@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'; // Import useRouter to get the event ID from the URL
+import { useRouter } from 'next/router';
 import Loader from '@components/Loader/Loader';
 import { EventApi } from 'api';
 
@@ -11,7 +11,7 @@ import Heading from '@components/Heading/Heading';
 import EventCard from '@components/Card/EventCard';
 import CardGroup from '@components/Card/CardGroup';
 import TicketForm from './components/TicketForm';
-import Link from 'next/link';
+
 interface paginationResponse<T> {
   page: number;
   totalPage: number;
@@ -32,6 +32,7 @@ interface eventList {
   image: string;
   status: string;
 }
+
 interface APIResponse<T> {
   data: T;
   success: boolean;
@@ -41,6 +42,7 @@ interface APIResponse<T> {
   priceTotal: number;
   errorMessages: string[];
 }
+
 interface EventDetail {
   id: number;
   title: string;
@@ -58,13 +60,12 @@ const Page = (): React.JSX.Element => {
   const [loading, setLoading] = useState<boolean>(true);
   const [otherEvents, setOtherEvents] = useState<eventList[]>([]);
 
-  const urlSegments = window.location.pathname.split('/');
-  const id = urlSegments[urlSegments.length - 1];
   const page = 1; // Specify the page number
   const pageSize = 5; // Specify the number of events per page
-  const searchTerm = ''; // Specify the search term, if any
 
   useEffect(() => {
+    const urlSegments = window.location.pathname.split('/');
+    const id = urlSegments[urlSegments.length - 1];
     const fetchEventDetails = async () => {
       if (!id) return; // Ensure the ID is available
 
@@ -72,7 +73,9 @@ const Page = (): React.JSX.Element => {
       try {
         const response = await eventApi.apiEventIdGet(Number(id));
         //@ts-ignore
-        setEvent(response.data); // Assuming the response contains event details
+        console.log(response.data.data);
+        //@ts-ignore
+        setEvent(response.data.data); // Assuming the response contains event details
       } catch (error) {
         console.error('Failed to fetch event details', error);
       } finally {
@@ -85,6 +88,7 @@ const Page = (): React.JSX.Element => {
       try {
         const response: any = await eventApi.apiEventGet(page, pageSize);
         const data = response.data as APIResponse<paginationResponse<eventList>>;
+
         setOtherEvents(data.data.listData);
       } catch (error) {
         console.error('Failed to fetch other events', error);
@@ -93,7 +97,7 @@ const Page = (): React.JSX.Element => {
 
     fetchEventDetails();
     fetchEvents();
-  }, [id]);
+  }, []);
 
   if (loading) {
     return <Loader type='inline' color='gray' text='Loading event details...' />;
@@ -121,7 +125,10 @@ const Page = (): React.JSX.Element => {
           />
           <Heading type={1} color='white' text={event.title} />
           <Heading type={5} color='white' text={new Date(event.startDate).toLocaleDateString()} />
+          <Heading type={4} color='white' text={'to'} />
+          <Heading type={5} color='white' text={new Date(event.endDate).toLocaleDateString()} />
           <Heading type={6} color='white' text={event.venueName} />
+          <Heading type={6} color='white' text={event.status} />
         </div>
       </div>
       <Section className='white-background'>
@@ -138,30 +145,8 @@ const Page = (): React.JSX.Element => {
                 <div className='ticket-box-header'>
                   <Heading type={4} color='gray' text='Tickets' />
                 </div>
-                <TicketForm
-                  data={[
-                    {
-                      id: 1,
-                      name: 'Family',
-                      price: '£10',
-                      ordering: 1,
-                      soldout: true,
-                    },
-                    {
-                      id: 2,
-                      name: 'Adult',
-                      price: '£20',
-                      ordering: 2,
-                    },
-                    {
-                      id: 3,
-                      name: 'Child',
-                      price: '£30',
-                      ordering: 3,
-                      information: 'Information about child tickets',
-                    },
-                  ]}
-                />
+
+                <TicketForm eventId={event.id} />
               </div>
             </div>
           </div>
@@ -170,16 +155,7 @@ const Page = (): React.JSX.Element => {
 
       <Section className='white-background'>
         <div className='container'>
-          <Heading type={4} color='gray' text={event.venueName} />
-
-          <Heading type={6} color='gray' text='Address' />
-          <div className='paragraph-container'>
-            <p className='gray'>Lorem ipsum dolor sit amet consecteteur adispicing elit.</p>
-          </div>
-          <Heading type={6} color='gray' text='How to get there?' />
-          <div className='paragraph-container'>
-            <p className='gray'>Lorem ipsum dolor sit amet consecteteur adispicing elit.</p>
-          </div>
+          <Heading type={4} color='gray' text={`At` + ' ' + event.venueName} />
         </div>
       </Section>
 

@@ -7,6 +7,7 @@ export interface IAlert {
   type: string;
   text: any;
   show?: boolean | false;
+  timerId?: any;
 }
 
 export interface IAlertContext {

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { type FormEvent } from 'react';
+import React, { useState, type FormEvent } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 // hooks
 import useAlert from '@hooks/useAlert';
@@ -12,179 +13,125 @@ import Loader from '@components/Loader/Loader';
 import Heading from '@components/Heading/Heading';
 
 // interfaces
-interface IFormProps {
+interface IAttendeeDetails {
   name: string;
   email: string;
-  cardCvc: string;
-  cardName: string;
-  cardNumber: string;
-  cardExpiration: string;
+  phone: string;
 }
 
-const Form = (): React.JSX.Element => {
+const BuyTicket = (): React.JSX.Element => {
   const { showAlert, hideAlert } = useAlert();
+  const searchParams = useSearchParams();
 
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [formValues, setFormValues] = React.useState<IFormProps>({
+  const [loading, setLoading] = useState<boolean>(false);
+  const [attendeeDetails, setAttendeeDetails] = useState<IAttendeeDetails>({
     name: '',
     email: '',
-    cardCvc: '',
-    cardName: '',
-    cardNumber: '',
-    cardExpiration: '',
+    phone: '',
   });
 
-  /**
-   * Handles changes to form input fields.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} e - The event object from the input change.
-   */
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleAttendeeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
 
-    setFormValues({
-      ...formValues,
+    setAttendeeDetails({
+      ...attendeeDetails,
       [name]: value,
     });
   };
 
-  /**
-   * Handles form submission.
-   *
-   * @param {FormEvent<HTMLFormElement>} e - The event object from the form submission.
-   * @return {Promise<any>} - The result of the form submission.
-   */
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<any> => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-
     hideAlert();
-
     setLoading(true);
 
-    setLoading(false);
+    const payload = {
+      registrationDate: new Date().toISOString(),
+      ticketId: Number(searchParams.get('ticketId')),
+      eventId: Number(searchParams.get('eventId')),
+      attendeeDetails: [attendeeDetails],
+    };
+
+    try {
+      const response = await fetch('/api/ticket/purchase', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        showAlert({ type: 'success', text: 'Ticket purchased successfully' });
+      } else {
+        showAlert({ type: 'error', text: 'Failed to purchase ticket' });
+      }
+    } catch (error) {
+      showAlert({ type: 'error', text: 'There was an error processing your request' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
-    return <Loader type='inline' color='gray' text='Hang on a second' />;
+    return <Loader type='inline' color='gray' text='Processing your purchase...' />;
   }
 
   return (
     <form
-      className='form shrink'
+      className='form'
       noValidate
       onSubmit={(e) => {
         void handleSubmit(e);
       }}
     >
+      <div className='ticket-details'>
+        <Heading type={5} color='gray' text='Ticket Details' />
+        <p>Event ID: {searchParams.get('eventId')}</p>
+        <p>Ticket ID: {searchParams.get('ticketId')}</p>
+        <p>Price: ${searchParams.get('price')}</p>
+        <p>Available Quantity: {searchParams.get('quantity')}</p>
+      </div>
       <div className='form-elements'>
-        <div className='form-line padding-top'>
-          <Heading type={5} color='gray' text='Buyer info' />
-        </div>
         <div className='form-line'>
-          <div className='flex flex-v-center flex-space-between'>
-            <div className='two-line'>
-              <div className='label-line'>
-                <label htmlFor='name'>Name</label>
-              </div>
-              <Input
-                type='text'
-                name='name'
-                value={formValues.name}
-                maxLength={48}
-                placeholder='Enter your name'
-                required
-                onChange={handleChange}
-              />
-            </div>
-            <div className='two-line'>
-              <div className='label-line'>
-                <label htmlFor='email'>E-mail address</label>
-              </div>
-              <Input
-                type='text'
-                name='email'
-                value={formValues.email}
-                maxLength={64}
-                placeholder='Enter your e-mail address'
-                required
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-        </div>
-        <div className='form-line padding-top'>
-          <Heading type={5} color='gray' text='Payment details' />
-        </div>
-        <div className='form-line'>
-          <div className='flex flex-v-center flex-space-between'>
-            <div className='two-line'>
-              <div className='label-line'>
-                <label htmlFor='cardName'>Name on card</label>
-              </div>
-              <Input
-                type='text'
-                name='cardName'
-                value={formValues.cardName}
-                maxLength={48}
-                placeholder='Enter name on card'
-                required
-                onChange={handleChange}
-              />
-            </div>
-            <div className='two-line'>
-              <div className='label-line'>
-                <label htmlFor='cardNumber'>Card number</label>
-              </div>
-              <Input
-                type='text'
-                name='cardNumber'
-                value={formValues.cardNumber}
-                maxLength={16}
-                placeholder='Enter your card number'
-                required
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-        </div>
-        <div className='form-line'>
-          <div className='flex flex-v-center flex-space-between'>
-            <div className='two-line'>
-              <div className='label-line'>
-                <label htmlFor='cardExpiration'>Expiration date</label>
-              </div>
-              <Input
-                type='text'
-                name='cardExpiration'
-                value={formValues.cardExpiration}
-                maxLength={4}
-                placeholder="Enter your card's expiration date"
-                required
-                onChange={handleChange}
-              />
-            </div>
-            <div className='two-line'>
-              <div className='label-line'>
-                <label htmlFor='cardCvc'>Security number</label>
-              </div>
-              <Input
-                type='text'
-                name='cardCvc'
-                value={formValues.cardCvc}
-                maxLength={3}
-                placeholder="Enter your card's security number"
-                required
-                onChange={handleChange}
-              />
-            </div>
+          <Heading type={5} color='gray' text='Attendee Details' />
+          <div className='form-group'>
+            <Input
+              type='text'
+              name='name'
+              value={attendeeDetails.name}
+              placeholder='Enter your name'
+              required
+              maxLength={50}
+              onChange={handleAttendeeChange}
+            />
+            <Input
+              type='email'
+              name='email'
+              value={attendeeDetails.email}
+              placeholder='Enter your email'
+              required
+              maxLength={50}
+              onChange={handleAttendeeChange}
+            />
+            <Input
+              type='text'
+              name='phone'
+              value={attendeeDetails.phone}
+              placeholder='Enter your phone number'
+              required
+              maxLength={50}
+              onChange={handleAttendeeChange}
+            />
           </div>
         </div>
         <div className='form-buttons'>
-          <Button type='submit' color='blue-filled' text='Place payment & Issue tickets' />
+          <Button type='submit' color='blue-filled' text='Complete Purchase' />
         </div>
       </div>
     </form>
   );
 };
 
-export default Form;
+export default BuyTicket;
