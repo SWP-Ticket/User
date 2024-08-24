@@ -7,7 +7,6 @@ import EventCard from '@components/Card/EventCard';
 import CardGroup from '@components/Card/CardGroup';
 import FormSearch from 'app/home/components/FormSearch';
 import { EventApi } from 'api';
-import { useRouter } from 'next/navigation';
 
 const Page = (): React.JSX.Element => {
   const [events, setEvents] = useState<any[]>([]);
@@ -15,7 +14,7 @@ const Page = (): React.JSX.Element => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(100);
   const [loading, setLoading] = useState<boolean>(true);
-
+  // console.log(events);
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     try {
@@ -63,7 +62,7 @@ const Page = (): React.JSX.Element => {
             when={new Date(event.startDate).toLocaleString()}
             name={event.title}
             venue={event.venueName}
-            image={event.image}
+            image={event.imageURL}
             status={event.status}
           />
         ))}

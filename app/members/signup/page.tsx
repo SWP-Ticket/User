@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Link from 'next/link';
-import { type Metadata } from 'next';
 
 // components
 import Master from '@components/Layout/Master';
@@ -29,24 +28,5 @@ const Page = (): React.JSX.Element => (
     </Section>
   </Master>
 );
-
-const title = 'Sign up';
-const canonical = 'https://modern-ticketing.com/members/signup';
-const description = 'Modern ticketing is a modern ticketing solution';
-
-export const metadata: Metadata = {
-  title,
-  description,
-  keywords: 'modern ticketing',
-  alternates: { canonical },
-  openGraph: {
-    title,
-    description,
-    url: canonical,
-    type: 'website',
-    siteName: 'Modern Ticketing',
-    images: 'https://modern-ticketing.com/logo192.png',
-  },
-};
 
 export default Page;

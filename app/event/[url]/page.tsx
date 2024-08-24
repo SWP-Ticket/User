@@ -29,7 +29,7 @@ interface eventList {
   venueName: string;
   startDate: Date;
   endDate: Date;
-  image: string;
+  imageURL: string;
   status: string;
 }
 
@@ -51,7 +51,7 @@ interface EventDetail {
   venueName: string;
   startDate: Date;
   endDate: Date;
-  image: string;
+  imageURL: string;
   status: string;
 }
 
@@ -59,10 +59,11 @@ const Page = (): React.JSX.Element => {
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [otherEvents, setOtherEvents] = useState<eventList[]>([]);
-
+  const userRole = sessionStorage.getItem('role');
+  const token = sessionStorage.getItem('token');
   const page = 1; // Specify the page number
-  const pageSize = 5; // Specify the number of events per page
-
+  const pageSize = 100; // Specify the number of events per page
+  console.log(token);
   useEffect(() => {
     const urlSegments = window.location.pathname.split('/');
     const id = urlSegments[urlSegments.length - 1];
@@ -73,7 +74,7 @@ const Page = (): React.JSX.Element => {
       try {
         const response = await eventApi.apiEventIdGet(Number(id));
         //@ts-ignore
-        console.log(response.data.data);
+
         //@ts-ignore
         setEvent(response.data.data); // Assuming the response contains event details
       } catch (error) {
@@ -112,14 +113,14 @@ const Page = (): React.JSX.Element => {
       <div className='blur-cover'>
         <div
           style={{
-            backgroundImage: `url(${event.image})`,
+            backgroundImage: `url(${event.imageURL})`,
           }}
           className='event-cover cover-image flex flex-v-center flex-h-center'
         />
         <div className='cover-info'>
           <div
             style={{
-              backgroundImage: `url(${event.image})`,
+              backgroundImage: `url(${event.imageURL})`,
             }}
             className='cover-image image'
           />
@@ -141,13 +142,14 @@ const Page = (): React.JSX.Element => {
               </div>
             </div>
             <div>
-              <div className='ticket-box'>
-                <div className='ticket-box-header'>
-                  <Heading type={4} color='gray' text='Tickets' />
+              {!token && (
+                <div className='ticket-box'>
+                  <div className='ticket-box-header'>
+                    <Heading type={4} color='gray' text='Tickets' />
+                  </div>
+                  <TicketForm eventId={event.id} />
                 </div>
-
-                <TicketForm eventId={event.id} />
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -168,7 +170,7 @@ const Page = (): React.JSX.Element => {
             when={new Date(ev.startDate).toLocaleDateString()}
             name={ev.title}
             venue={ev.venueName}
-            image={ev.image}
+            image={ev.imageURL}
             status={ev.status}
           />
         ))}

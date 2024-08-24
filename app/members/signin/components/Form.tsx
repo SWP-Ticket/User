@@ -33,11 +33,6 @@ const Form = (): React.JSX.Element => {
     password: '',
   });
 
-  /**
-   * Handles the change event for input fields in the form.
-   *
-   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event.
-   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
 
@@ -46,34 +41,36 @@ const Form = (): React.JSX.Element => {
       [name]: value,
     });
   };
-
-  /**
-   * Handles the form submission event.
-   *
-   * @param {FormEvent<HTMLFormElement>} e - The form submission event.
-   * @returns {Promise<void>} A promise that resolves when the request is complete.
-   */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     try {
       e.preventDefault();
 
-      hideAlert();
+      hideAlert(); // Clear any existing alerts
 
-      setLoading(true);
+      setLoading(true); // Set loading state
 
       const authenApi = new AuthenApi();
       const response = await authenApi.apiAuthenLoginPost({
         email: formValues.email,
         password: formValues.password,
       });
-      console.log(response);
+
+      //@ts-ignore
+      const { token, role, hintId } = response.data;
+
+      if (role === 'Sponsor') {
+        sessionStorage.clear();
+        showAlert({ type: 'error', text: 'You are not signed in here' });
+        setLoading(false);
+        return;
+      }
+
+      // If role is not 'sponsor', proceed with normal login flow
       showAlert({ type: 'success', text: 'Login successful' });
-      // @ts-ignore
-      sessionStorage.setItem('token', response.data.token);
-      // @ts-ignore
-      sessionStorage.setItem('role', response.data.role);
-      // @ts-ignore
-      sessionStorage.setItem('id', response.data.hintId);
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('role', role);
+      sessionStorage.setItem('id', hintId);
+
       setTimeout(() => {
         router.push('/');
       }, 2000);
@@ -82,7 +79,7 @@ const Form = (): React.JSX.Element => {
       showAlert({ type: 'error', text: error.response.data.errorMessages });
     }
 
-    setLoading(false);
+    setLoading(false); // Reset loading state
   };
 
   if (loading) {

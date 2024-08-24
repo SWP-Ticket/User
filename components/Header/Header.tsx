@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-
 import Link from 'next/link';
 
 // hooks
@@ -9,48 +8,72 @@ import useClickOutside from '@hooks/useClickOutside';
 
 // components
 import Dropdown from '@components/Dropdown/Dropdown';
-import DropdownItem from '@components/Dropdown/DropdownItem';
-import ProfilePhoto from '@components/Profile/ProfilePhoto';
 import ButtonLink from '@components/Button/ButtonLink';
+import { UserApi } from 'api';
+
+interface UserInfo {
+  id: number;
+  name: string;
+  email: string;
+  status: string;
+}
+
 const Header = (): React.JSX.Element => {
-  const wrapperRef = React.useRef<any>();
-  const [role, setRole] = React.useState<string | null>('');
+  const wrapperRef = React.useRef<any>(null);
+  const [role, setRole] = React.useState<string | null>(null);
   const [menu, setMenu] = React.useState<boolean>(false);
   const [dropdown, setDropdown] = React.useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [userInfo, setUserInfo] = React.useState<UserInfo | null>(null);
 
-  /**
-   * This is a functional component for the Header.
-   * It uses the useClickOutside hook to handle click events outside the component.
-   * It also manages the state of the menu and dropdown.
-   */
   useClickOutside(wrapperRef, () => {
     setDropdown(false);
   });
 
-  /**
-   * Toggles the menu state.
-   */
   const menuState = (): void => {
     setMenu((state) => !state);
   };
+
   const handleSignOut = () => {
     sessionStorage.clear();
-
     window.location.href = '/members/signout';
   };
+
+  // Check login status
   React.useEffect(() => {
     const checkLoginStatus = () => {
       const token = sessionStorage.getItem('token');
       const role = sessionStorage.getItem('role');
-
-      console.log(token);
+      const userId = sessionStorage.getItem('id');
       setRole(role);
       setIsLoggedIn(!!token);
+
+      // Fetch user data if logged in
+      if (userId && token) {
+        fetchUserData(Number(userId));
+      }
     };
 
     checkLoginStatus();
   }, []);
+
+  // Fetch user data
+  const fetchUserData = async (userId: number) => {
+    setLoading(true);
+    try {
+      const userApi = new UserApi();
+      const user = await userApi.apiUserIdGet(userId);
+      console.log(user);
+      //@ts-ignore
+      setUserInfo(user.data.data);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+      // Handle error (e.g., show alert or redirect)
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <header>
@@ -83,17 +106,14 @@ const Header = (): React.JSX.Element => {
             </Link>
           )}
           {role == 'Organizer' && (
-            <Link href='/createTicket' className='gray'>
-              Create ticket
+            <Link href='/requests' className='gray'>
+              Requests
             </Link>
           )}
         </div>
         <div className='members' ref={wrapperRef}>
-          {isLoggedIn ? (
+          {isLoggedIn && userInfo ? (
             <div className='profile'>
-              <Link href='/members/account'>
-                <ProfilePhoto size='small' />
-              </Link>
               <button
                 type='button'
                 className='menu-opener'
@@ -101,15 +121,16 @@ const Header = (): React.JSX.Element => {
                   setDropdown(!dropdown);
                 }}
               >
-                My Profile
+                <strong>{role}</strong> <br />
+                Hello {userInfo.name}
                 <span className='material-symbols-outlined'>
                   {dropdown ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
                 </span>
               </button>
               {dropdown && (
                 <Dropdown color='gray'>
-                  <DropdownItem url='members/account' text='My account' />
                   <hr />
+
                   <button type='button' className='dropdown-item' onClick={handleSignOut}>
                     Sign out
                   </button>

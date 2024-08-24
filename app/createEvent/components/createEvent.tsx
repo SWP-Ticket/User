@@ -22,8 +22,16 @@ interface IVenue {
 }
 
 const CreateEventPage = (): React.JSX.Element => {
+  const { showAlert } = useAlert();
   const organizerId = sessionStorage.getItem('organizerId') || '';
 
+  useEffect(() => {
+    const role = sessionStorage.getItem('role');
+    if (role !== 'Organizer') {
+      window.location.href = '/';
+      showAlert({ type: 'error', text: 'You are not allowed' });
+    }
+  }, [showAlert]);
   const [formValues, setFormValues] = useState<IFormProps>({
     title: '',
     description: '',
@@ -31,14 +39,14 @@ const CreateEventPage = (): React.JSX.Element => {
     endDate: new Date(),
     venueId: '',
     imageUrl: '',
-    organizerId: organizerId, // Use organizerId here
+    organizerId: organizerId,
   });
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [venues, setVenues] = useState<IVenue[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const { showAlert } = useAlert();
+
   console.log('Organizer ID:', formValues.organizerId);
   console.log('Venue ID:', formValues.venueId);
   console.log(formValues);
@@ -118,8 +126,8 @@ const CreateEventPage = (): React.JSX.Element => {
           formValues.startDate.toISOString(),
           formValues.endDate.toISOString(),
           Number(organizerId),
-          formValues.description,
           Number(formValues.venueId),
+          formValues.description,
           imageUrl
         );
         console.log(response);
