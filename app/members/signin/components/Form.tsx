@@ -58,7 +58,7 @@ const Form = (): React.JSX.Element => {
       //@ts-ignore
       const { token, role, hintId } = response.data;
 
-      if ((role === 'Sponsor', 'Staff')) {
+      if (role == 'Sponsor' || role == 'Staff') {
         sessionStorage.clear();
         showAlert({ type: 'error', text: 'You are not signed in here' });
         setLoading(false);

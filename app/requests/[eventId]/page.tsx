@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation'; // useParams for Next.js App Router
+import { useParams } from 'next/navigation';
 import {
   Box,
   Typography,
@@ -14,8 +14,9 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from '@mui/material';
-import { EventApi } from 'api';
+import { BoothRequestApi } from 'api';
 import Header from '@components/Header/Header';
 import Footer from '@components/Footer/Footer';
 
@@ -34,15 +35,31 @@ const EventRequestsPage: React.FC = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const updateRequestStatus = async (requestId: number, status: string) => {
+    try {
+      const boothRequestApi = new BoothRequestApi();
+      await boothRequestApi.apiBoothRequestChangeRequestStatusIdPut(requestId, { status });
+      // Update the local state to reflect the status change
+      setRequests((prevRequests) =>
+        prevRequests.map((req) => (req.id === requestId ? { ...req, status } : req))
+      );
+    } catch (error) {
+      console.error(`Error updating request status to ${status}:`, error);
+    }
+  };
+
   useEffect(() => {
     if (eventId) {
       const fetchRequests = async () => {
         try {
           setLoading(true);
-          const eventApi = new EventApi();
-          const requestsData = await eventApi.apiEventRequestsGet(Number(eventId));
+          const boothRequestApi = new BoothRequestApi();
+          const requestsData = await boothRequestApi.apiBoothRequestEventEventIdGet(
+            Number(eventId)
+          );
+          console.log(requestsData);
           //@ts-ignore
-          setRequests(requestsData.data.data.listData);
+          setRequests(requestsData.data.data);
         } catch (error) {
           console.error('Error fetching requests:', error);
         } finally {
@@ -62,6 +79,11 @@ const EventRequestsPage: React.FC = () => {
           Event Requests
         </Typography>
       </Box>
+      <Box display='flex' justifyContent='center' mb={2}>
+        <Button variant='contained' onClick={() => window.history.back()}>
+          Back
+        </Button>
+      </Box>
       {loading ? (
         <Box display='flex' justifyContent='center' alignItems='center'>
           <CircularProgress />
@@ -75,6 +97,7 @@ const EventRequestsPage: React.FC = () => {
                 <TableCell>Booth Name</TableCell>
                 <TableCell>Request Date</TableCell>
                 <TableCell>Status</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -84,6 +107,26 @@ const EventRequestsPage: React.FC = () => {
                   <TableCell>{request.boothName}</TableCell>
                   <TableCell>{new Date(request.requestDate).toLocaleDateString()}</TableCell>
                   <TableCell>{request.status}</TableCell>
+                  <TableCell>
+                    {request.status === 'Pending' && (
+                      <Box display='flex' gap={2}>
+                        <Button
+                          variant='contained'
+                          color='primary'
+                          onClick={() => updateRequestStatus(request.id, 'Approved')}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          onClick={() => updateRequestStatus(request.id, 'Rejected')}
+                        >
+                          Reject
+                        </Button>
+                      </Box>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
