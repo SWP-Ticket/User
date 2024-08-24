@@ -68,6 +68,7 @@ const TicketForm = ({ eventId }: IProps): React.JSX.Element => {
         eventId: selectedTicket.eventId.toString(),
         price: selectedTicket.price.toString(),
         quantity: selectedTicket.quantity.toString(),
+        saleEnd: selectedTicket.ticketSaleEndDate,
       }).toString();
 
       window.location.href = `/buy?${queryParams}`;

@@ -7,10 +7,15 @@ interface IProps {
   color: string;
   leftIcon?: string;
   rightIcon?: string;
+  onClick?: () => void; // Added onClick prop
 }
 
-const Button = ({ type, text, color, leftIcon, rightIcon }: IProps): React.JSX.Element => (
-  <button type={type === 'button' ? 'button' : 'submit'} className={`button ${color}`}>
+const Button = ({ type, text, color, leftIcon, rightIcon, onClick }: IProps): React.JSX.Element => (
+  <button
+    type={type === 'button' ? 'button' : 'submit'}
+    className={`button ${color}`}
+    onClick={onClick} // Added onClick handler
+  >
     {leftIcon !== undefined && (
       <span className='material-symbols-outlined left-icon'>{leftIcon}</span>
     )}

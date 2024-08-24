@@ -78,8 +78,13 @@ const Header = (): React.JSX.Element => {
             Contact us
           </Link>
           {role == 'Organizer' && (
-            <Link href='/create-event' className='gray'>
+            <Link href='/createEvent' className='gray'>
               Create event
+            </Link>
+          )}
+          {role == 'Organizer' && (
+            <Link href='/createTicket' className='gray'>
+              Create ticket
             </Link>
           )}
         </div>
@@ -96,14 +101,13 @@ const Header = (): React.JSX.Element => {
                   setDropdown(!dropdown);
                 }}
               >
-                Cenk
+                My Profile
                 <span className='material-symbols-outlined'>
                   {dropdown ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
                 </span>
               </button>
               {dropdown && (
                 <Dropdown color='gray'>
-                  <DropdownItem url='members/tickets' text='My tickets' />
                   <DropdownItem url='members/account' text='My account' />
                   <hr />
                   <button type='button' className='dropdown-item' onClick={handleSignOut}>
