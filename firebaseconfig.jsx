@@ -5,13 +5,13 @@ import { getStorage } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyAyxtra_7NAcB6vhqrgMnaUeIwBqo1f43A',
-  authDomain: 'capstone-b87ce.firebaseapp.com',
-  projectId: 'capstone-b87ce',
-  storageBucket: 'capstone-b87ce.appspot.com',
-  messagingSenderId: '863065874835',
-  appId: '1:863065874835:web:9059fe1c54746c9cb5c866',
-  measurementId: 'G-E04B3MKJ6X',
+  apiKey: 'AIzaSyCkxq1jeb9v320Aow79Mx0Sbe6Dq-dLQD0',
+  authDomain: 'swp-3-209dc.firebaseapp.com',
+  projectId: 'swp-3-209dc',
+  storageBucket: 'swp-3-209dc.appspot.com',
+  messagingSenderId: '265867443689',
+  appId: '1:265867443689:web:088f3245a50cb7f77ddf78',
+  measurementId: 'G-Y36B4FEHF5',
 };
 
 // Initialize Firebase

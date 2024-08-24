@@ -1,46 +1,76 @@
 'use client';
-import React, { FormEvent } from 'react';
-import { storage } from '../../../../firebaseconfig';
+import React, { FormEvent, useEffect, useState } from 'react';
+import { storage } from '../../../firebaseconfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import useAlert from '@hooks/useAlert';
 import Input from '@components/Form/Input';
-import { EventApi } from 'api';
+import { EventApi, VenueApi } from 'api'; // Import the VenueApi
 
 interface IFormProps {
   title: string;
   description: string;
   startDate: Date;
   endDate: Date;
-  venueId: number;
-  imageUrl: File | null;
-  organizerId: number;
+  venueId: string;
+  imageUrl: string;
+  organizerId: string;
+}
+
+interface IVenue {
+  id: number;
+  name: string;
 }
 
 const CreateEventPage = (): React.JSX.Element => {
-  const [formValues, setFormValues] = React.useState<IFormProps>({
+  const organizerId = sessionStorage.getItem('organizerId') || '';
+
+  const [formValues, setFormValues] = useState<IFormProps>({
     title: '',
     description: '',
     startDate: new Date(),
     endDate: new Date(),
-    venueId: 0,
-    imageUrl: null,
-    organizerId: 0,
+    venueId: '',
+    imageUrl: '',
+    organizerId: organizerId, // Use organizerId here
   });
 
-  const [imagePreviewUrl, setImagePreviewUrl] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [venues, setVenues] = useState<IVenue[]>([]);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const { showAlert } = useAlert();
+  console.log('Organizer ID:', formValues.organizerId);
+  console.log('Venue ID:', formValues.venueId);
+  console.log(formValues);
+  console.log(venues);
+  useEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        const venueApi = new VenueApi();
+        const response = await venueApi.apiVenueGet();
+        // @ts-ignore
+        setVenues(response.data.data.listData);
+      } catch (error) {
+        showAlert({ type: 'error', text: 'Failed to fetch venues.' });
+      }
+    };
+
+    fetchVenues();
+  }, [showAlert]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
+
     if (file) {
-      setFormValues({ ...formValues, imageUrl: file });
+      setImageFile(file);
+
       const previewUrl = URL.createObjectURL(file);
       setImagePreviewUrl(previewUrl);
+    } else {
+      console.log('No file selected');
     }
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name === 'startDate' || name === 'endDate') {
       setFormValues({
@@ -50,7 +80,7 @@ const CreateEventPage = (): React.JSX.Element => {
     } else if (name === 'venueId') {
       setFormValues({
         ...formValues,
-        [name]: parseInt(value, 10), // Convert string to number
+        [name]: value, // Convert string to number
       });
     } else {
       setFormValues({
@@ -60,12 +90,19 @@ const CreateEventPage = (): React.JSX.Element => {
     }
   };
 
-  const uploadImageToFirebase = async (): Promise<string | null> => {
-    if (!formValues.imageUrl) return null;
+  const uploadImageToFirebase = async (file: File): Promise<string | null> => {
+    if (!file) return null;
 
-    const imageRef = ref(storage, `images/${formValues.imageUrl.name}`);
-    await uploadBytes(imageRef, formValues.imageUrl);
-    return await getDownloadURL(imageRef);
+    try {
+      const imageRef = ref(storage, `images/${file.name}`);
+      await uploadBytes(imageRef, file);
+      const downloadUrl = await getDownloadURL(imageRef);
+      console.log('Uploaded image URL:', downloadUrl); // Debug log
+      return downloadUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return null;
+    }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -73,20 +110,23 @@ const CreateEventPage = (): React.JSX.Element => {
     setLoading(true);
 
     try {
-      const imageUrl = await uploadImageToFirebase();
-      const eventApi = new EventApi();
-
-      // Convert dates to ISO strings
-      const response = await eventApi.apiEventPost(
-        formValues.title,
-        formValues.description,
-        formValues.startDate.toISOString(),
-        formValues.endDate.toISOString(),
-        formValues.venueId,
-        imageUrl // Assuming imageUrl is also a parameter
-      );
-
-      showAlert({ type: 'success', text: 'Event created successfully!' });
+      const imageUrl = imageFile ? await uploadImageToFirebase(imageFile) : formValues.imageUrl;
+      if (imageUrl) {
+        const eventApi = new EventApi();
+        const response = await eventApi.apiEventPost(
+          formValues.title,
+          formValues.startDate.toISOString(),
+          formValues.endDate.toISOString(),
+          Number(organizerId),
+          formValues.description,
+          Number(formValues.venueId),
+          imageUrl
+        );
+        console.log(response);
+        showAlert({ type: 'success', text: 'Event created successfully!' });
+      } else {
+        showAlert({ type: 'error', text: 'Failed to upload image.' });
+      }
     } catch (error) {
       showAlert({ type: 'error', text: 'Failed to create event.' });
     } finally {
@@ -201,18 +241,25 @@ const CreateEventPage = (): React.JSX.Element => {
       </div>
       <div>
         <label htmlFor='venueId' style={labelStyle}>
-          Venue ID
+          Venue
         </label>
         <div style={{ marginBottom: '16px' }}>
-          <Input
-            type='number'
+          <select
             name='venueId'
-            value={String(formValues.venueId)}
-            maxLength={5}
-            placeholder='Enter venue ID'
-            required
+            value={formValues.venueId}
             onChange={handleChange}
-          />
+            style={inputStyle}
+            required
+          >
+            <option value='' disabled>
+              Select a venue
+            </option>
+            {venues.map((venue) => (
+              <option key={venue.id} value={venue.id}>
+                {venue.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
       <div>

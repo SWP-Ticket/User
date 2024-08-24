@@ -31,9 +31,7 @@ const Footer = (): React.JSX.Element => {
           <Link href='/help' className='white'>
             Help
           </Link>
-          <Link href='/news' className='white'>
-            News
-          </Link>
+
           <Link href='/contact' className='white'>
             Contact us
           </Link>

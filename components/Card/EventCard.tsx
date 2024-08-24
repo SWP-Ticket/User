@@ -9,7 +9,6 @@ import ButtonLink from '@components/Button/ButtonLink';
 // interfaces
 interface IProps {
   url: string;
-
   when: string;
   name: string;
   venue: string;
@@ -18,16 +17,7 @@ interface IProps {
   status: string;
 }
 
-const EventCard = ({
-  url,
-
-  when,
-  name,
-  venue,
-  image,
-  color,
-  status,
-}: IProps): React.JSX.Element => (
+const EventCard = ({ url, when, name, venue, image, color, status }: IProps): React.JSX.Element => (
   <div className='card'>
     <Link href={`/event/${url}`}>
       <div className='card-title'>

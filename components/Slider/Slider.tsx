@@ -155,9 +155,10 @@ const Slider = ({ children }: IProps): React.JSX.Element => {
   };
 
   React.useEffect(() => {
-    buttons();
+    const elementRef = navReference.current;
+    if (!elementRef) return;
 
-    const elementRef: HTMLDivElement = navReference.current;
+    buttons(); // Initial check
 
     window.addEventListener('resize', scroll);
     elementRef.addEventListener('click', click);

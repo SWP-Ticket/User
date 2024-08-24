@@ -73,7 +73,7 @@ const Form = (): React.JSX.Element => {
       // @ts-ignore
       sessionStorage.setItem('role', response.data.role);
       // @ts-ignore
-      sessionStorage.setItem('organizerId', response.data.hintId);
+      sessionStorage.setItem('id', response.data.hintId);
       setTimeout(() => {
         router.push('/');
       }, 2000);
