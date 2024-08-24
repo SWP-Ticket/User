@@ -1,5 +1,6 @@
-// components/EventList.tsx
+// app/requests/components/EventList.tsx
 import React from 'react';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -8,7 +9,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Typography,
 } from '@mui/material';
 
 interface Event {
@@ -44,7 +44,11 @@ const EventList: React.FC<EventListProps> = ({ events }) => {
         <TableBody>
           {events.map((event) => (
             <TableRow key={event.id}>
-              <TableCell>{event.title}</TableCell>
+              <TableCell>
+                <Link href={`/requests/${event.id}`} passHref>
+                  <p style={{ textDecoration: 'none', color: 'inherit' }}>{event.title}</p>
+                </Link>
+              </TableCell>
               <TableCell>{event.description || 'No description available'}</TableCell>
               <TableCell>{event.status}</TableCell>
               <TableCell>

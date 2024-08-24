@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import EventList from './components/EventList'; // Adjust the import path as necessary
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Pagination, CircularProgress } from '@mui/material';
 import { EventApi } from 'api';
 import Header from '@components/Header/Header';
 import Footer from '@components/Footer/Footer';
@@ -24,34 +24,67 @@ interface Event {
 
 const Page: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize] = useState<number>(10); // Set the page size
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchAndSetEvents = async () => {
+  const fetchAndSetEvents = async (page: number, pageSize: number) => {
     const organizerId = sessionStorage.getItem('id');
     if (organizerId) {
       try {
+        setLoading(true);
         const eventApi = new EventApi();
-        const eventsData = await eventApi.apiEventOrganizerOrganizerIdGet(Number(organizerId));
+        const eventsData = await eventApi.apiEventOrganizerOrganizerIdGet(
+          Number(organizerId),
+          page,
+          pageSize
+        );
         //@ts-ignore
         setEvents(eventsData.data.data.listData);
+        //@ts-ignore
+        setTotalPages(eventsData.data.data.totalPage);
       } catch (error) {
         console.error('Error fetching events:', error);
+      } finally {
+        setLoading(false);
       }
     }
   };
 
   useEffect(() => {
-    fetchAndSetEvents();
-  }, []);
+    fetchAndSetEvents(page, pageSize);
+  }, [page]);
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   return (
     <div>
       <Header />
       <Box>
         <Typography variant='h3' gutterBottom display={'flex'} justifyContent={'center'}>
-          Event List
+          My Event List
         </Typography>
       </Box>
-      <EventList events={events} />
+      {loading ? (
+        <Box display='flex' justifyContent='center' alignItems='center'>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <EventList events={events} />
+          <Box display='flex' justifyContent='center' marginTop={2} marginBottom={5}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color='primary'
+            />
+          </Box>
+        </>
+      )}
       <Footer />
     </div>
   );
