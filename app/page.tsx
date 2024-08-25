@@ -63,7 +63,7 @@ const Page = (): React.JSX.Element => {
             when={new Date(event.startDate).toLocaleString()}
             name={event.title}
             venue={event.venueName}
-            image={event.image}
+            image={event.imageURL}
             status={event.status}
           />
         ))}

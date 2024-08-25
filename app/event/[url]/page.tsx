@@ -29,7 +29,7 @@ interface eventList {
   venueName: string;
   startDate: Date;
   endDate: Date;
-  image: string;
+  imageURL: string;
   status: string;
 }
 
@@ -51,7 +51,7 @@ interface EventDetail {
   venueName: string;
   startDate: Date;
   endDate: Date;
-  image: string;
+  imageURL: string;
   status: string;
 }
 
@@ -112,14 +112,14 @@ const Page = (): React.JSX.Element => {
       <div className='blur-cover'>
         <div
           style={{
-            backgroundImage: `url(${event.image})`,
+            backgroundImage: `url(${event.imageURL})`,
           }}
           className='event-cover cover-image flex flex-v-center flex-h-center'
         />
         <div className='cover-info'>
           <div
             style={{
-              backgroundImage: `url(${event.image})`,
+              backgroundImage: `url(${event.imageURL})`,
             }}
             className='cover-image image'
           />
@@ -168,7 +168,7 @@ const Page = (): React.JSX.Element => {
             when={new Date(ev.startDate).toLocaleDateString()}
             name={ev.title}
             venue={ev.venueName}
-            image={ev.image}
+            image={ev.imageURL}
             status={ev.status}
           />
         ))}
