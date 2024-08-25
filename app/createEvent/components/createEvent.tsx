@@ -14,6 +14,9 @@ interface IFormProps {
   venueId: string;
   imageUrl: string;
   organizerId: string;
+  price: 0;
+  quantity: 0;
+  saleEndDate: Date;
 }
 
 interface IVenue {
@@ -22,7 +25,7 @@ interface IVenue {
 }
 
 const CreateEventPage = (): React.JSX.Element => {
-  const organizerId = sessionStorage.getItem('organizerId') || '';
+  const organizerId = sessionStorage.getItem('id') || '';
 
   const [formValues, setFormValues] = useState<IFormProps>({
     title: '',
@@ -31,9 +34,12 @@ const CreateEventPage = (): React.JSX.Element => {
     endDate: new Date(),
     venueId: '',
     imageUrl: '',
-    organizerId: organizerId, // Use organizerId here
+    organizerId: organizerId,
+    price: 0,
+    quantity: 0,
+    saleEndDate: new Date(),
   });
-
+  console.log(formValues);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [venues, setVenues] = useState<IVenue[]>([]);
@@ -109,29 +115,32 @@ const CreateEventPage = (): React.JSX.Element => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const imageUrl = imageFile ? await uploadImageToFirebase(imageFile) : formValues.imageUrl;
-      if (imageUrl) {
-        const eventApi = new EventApi();
-        const response = await eventApi.apiEventPost(
-          formValues.title,
-          formValues.startDate.toISOString(),
-          formValues.endDate.toISOString(),
-          Number(organizerId),
-          formValues.description,
-          Number(formValues.venueId),
-          imageUrl
-        );
-        console.log(response);
-        showAlert({ type: 'success', text: 'Event created successfully!' });
-      } else {
-        showAlert({ type: 'error', text: 'Failed to upload image.' });
-      }
-    } catch (error) {
-      showAlert({ type: 'error', text: 'Failed to create event.' });
-    } finally {
-      setLoading(false);
+    // try {
+    const imageUrl = imageFile ? await uploadImageToFirebase(imageFile) : formValues.imageUrl;
+    console.log(imageUrl);
+    if (imageUrl) {
+      const eventApi = new EventApi();
+      const response = await eventApi.apiEventPost(
+        formValues.title,
+        formValues.startDate.toISOString(),
+        formValues.endDate.toISOString(),
+        Number(organizerId),
+        Number(formValues.venueId),
+        formValues.description,
+        imageUrl,
+        formValues.price,
+        formValues.quantity
+      );
+      console.log(response);
+      showAlert({ type: 'success', text: 'Event created successfully!' });
+    } else {
+      showAlert({ type: 'error', text: 'Failed to upload image.' });
     }
+    // } catch (error) {
+    //   showAlert({ type: 'error', text: 'Failed to create event.' });
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const formStyle: React.CSSProperties = {
@@ -213,10 +222,10 @@ const CreateEventPage = (): React.JSX.Element => {
         </label>
         <div style={{ marginBottom: '16px' }}>
           <Input
-            type='date'
+            type='datetime-local'
             name='startDate'
             maxLength={128}
-            value={formValues.startDate.toISOString().split('T')[0]} // Convert Date to string for display
+            value={formValues.startDate.toISOString().slice(0, 16)} // Convert Date to string for display
             placeholder='Enter start date'
             required
             onChange={handleChange}
@@ -229,10 +238,10 @@ const CreateEventPage = (): React.JSX.Element => {
         </label>
         <div style={{ marginBottom: '16px' }}>
           <Input
-            type='date'
+            type='datetime-local'
             name='endDate'
             maxLength={128}
-            value={formValues.endDate.toISOString().split('T')[0]} // Convert Date to string for display
+            value={formValues.endDate.toISOString().slice(0, 16)} // Convert Date to string for display
             placeholder='Enter end date'
             required
             onChange={handleChange}
@@ -287,6 +296,39 @@ const CreateEventPage = (): React.JSX.Element => {
           style={{ maxWidth: '100%', marginTop: '10px' }}
         />
       )}
+      <h2>Ticket</h2>
+      <div>
+        <label htmlFor='title' style={labelStyle}>
+          Price of ticket
+        </label>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            type='number'
+            name='price'
+            value={formValues.price.toString()}
+            maxLength={128}
+            placeholder='Enter ticket price'
+            required
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+      <div>
+        <label htmlFor='title' style={labelStyle}>
+          Quantity of the ticket
+        </label>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            type='number'
+            name='quantity'
+            value={formValues.quantity.toString()}
+            maxLength={128}
+            placeholder='Enter ticket quantity'
+            required
+            onChange={handleChange}
+          />
+        </div>
+      </div>
       <button
         type='submit'
         disabled={loading}
