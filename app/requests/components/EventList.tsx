@@ -9,6 +9,8 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Typography,
+  Box,
 } from '@mui/material';
 
 interface Event {
@@ -35,28 +37,50 @@ const EventList: React.FC<EventListProps> = ({ events }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Title</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Image</TableCell>
+            <TableCell>
+              <Typography variant='h5' sx={{ display: 'flex', justifyContent: 'center' }}>
+                Title
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant='h5' sx={{ display: 'flex', justifyContent: 'center' }}>
+                Description
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant='h5' sx={{ display: 'flex', justifyContent: 'center' }}>
+                Status
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant='h5' sx={{ display: 'flex', justifyContent: 'center' }}>
+                Image
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {events.map((event) => (
             <TableRow key={event.id}>
               <TableCell>
-                <Link href={`/requests/${event.id}`} passHref>
-                  <p style={{ textDecoration: 'none', color: 'inherit' }}>{event.title}</p>
-                </Link>
+                <Box display={'flex'} justifyContent={'center'}>
+                  <Link href={`/requests/${event.id}`} passHref>
+                    <p style={{ textDecoration: 'none', color: 'inherit' }}>{event.title}</p>
+                  </Link>
+                </Box>
               </TableCell>
-              <TableCell>{event.description || 'No description available'}</TableCell>
+              <TableCell sx={{ width: 1000 }}>
+                {event.description || 'No description available'}
+              </TableCell>
               <TableCell>{event.status}</TableCell>
               <TableCell>
-                <img
-                  src={event.imageUrl}
-                  alt={event.title}
-                  style={{ width: '100px', height: 'auto' }}
-                />
+                <Box display={'flex'} justifyContent={'center'}>
+                  <img
+                    src={event.imageUrl}
+                    alt={event.title}
+                    style={{ width: 'auto', height: '100px', objectFit: 'cover' }}
+                  />
+                </Box>
               </TableCell>
             </TableRow>
           ))}

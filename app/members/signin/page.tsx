@@ -31,19 +31,19 @@ const Page = (): React.JSX.Element => (
 
 const title = 'Sign in';
 const canonical = 'https://modern-ticketing.com/members/signin';
-const description = 'Modern ticketing is a modern ticketing solution';
+const description = 'Ticketer is a Ticketer solution';
 
 export const metadata: Metadata = {
   title,
   description,
-  keywords: 'modern ticketing',
+  keywords: 'Ticketer',
   alternates: { canonical },
   openGraph: {
     title,
     description,
     url: canonical,
     type: 'website',
-    siteName: 'Modern Ticketing',
+    siteName: 'Ticketer',
     images: 'https://modern-ticketing.com/logo192.png',
   },
 };

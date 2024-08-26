@@ -20,12 +20,6 @@ const CardGroup = ({ url, title, color, background, children }: IProps): React.J
     <div className='container'>
       <div className='title flex flex-v-center flex-space-between'>
         <Heading type={3} color={color} text={title} />
-        <ButtonLink
-          color={`${color}-filled`}
-          text='See all'
-          rightIcon='arrow_forward'
-          url={`${url}`}
-        />
       </div>
     </div>
     <div className='carousel'>

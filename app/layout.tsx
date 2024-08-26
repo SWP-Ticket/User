@@ -16,9 +16,9 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>): Reac
   </html>
 );
 
-const title = 'Modern ticketing';
+const title = 'Ticketer';
 const canonical = 'https://modern-ticketing.com';
-const description = 'Modern ticketing is a modern ticketing solution';
+const description = 'Ticketer is a Ticketer solution';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -29,8 +29,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title,
   description,
-  robots: 'noindex, nofollow', // TODO: change in production
-  keywords: 'modern ticketing',
+  robots: 'noindex, nofollow',
+  keywords: 'Ticketer',
   alternates: { canonical },
   icons: {
     icon: '/favicon.ico',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     url: canonical,
     type: 'website',
     images: '/logo192.png',
-    siteName: 'Modern Ticketing',
+    siteName: 'Ticketer',
   },
 };
 

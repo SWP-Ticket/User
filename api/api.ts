@@ -172,6 +172,18 @@ export interface CreateEventDTO {
      * @memberof CreateEventDTO
      */
     'imageUrl'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateEventDTO
+     */
+    'price'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateEventDTO
+     */
+    'quantity'?: number;
 }
 /**
  * 
@@ -2863,10 +2875,12 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
          * @param {number} [organizerId] 
          * @param {string} [description] 
          * @param {string} [imageUrl] 
+         * @param {number} [price] 
+         * @param {number} [quantity] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventPost: async (title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiEventPost: async (title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'title' is not null or undefined
             assertParamExists('apiEventPost', 'title', title)
             // verify required parameter 'startDate' is not null or undefined
@@ -2918,6 +2932,14 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
     
             if (imageUrl !== undefined) { 
                 localVarFormParams.append('ImageUrl', imageUrl as any);
+            }
+    
+            if (price !== undefined) { 
+                localVarFormParams.append('Price', price as any);
+            }
+    
+            if (quantity !== undefined) { 
+                localVarFormParams.append('Quantity', quantity as any);
             }
     
     
@@ -3139,11 +3161,13 @@ export const EventApiFp = function(configuration?: Configuration) {
          * @param {number} [organizerId] 
          * @param {string} [description] 
          * @param {string} [imageUrl] 
+         * @param {number} [price] 
+         * @param {number} [quantity] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateEventDTOServiceResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, options);
+        async apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateEventDTOServiceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, price, quantity, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EventApi.apiEventPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3277,11 +3301,13 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
          * @param {number} [organizerId] 
          * @param {string} [description] 
          * @param {string} [imageUrl] 
+         * @param {number} [price] 
+         * @param {number} [quantity] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, options?: any): AxiosPromise<CreateEventDTOServiceResponse> {
-            return localVarFp.apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, options).then((request) => request(axios, basePath));
+        apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options?: any): AxiosPromise<CreateEventDTOServiceResponse> {
+            return localVarFp.apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, price, quantity, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3420,12 +3446,14 @@ export class EventApi extends BaseAPI {
      * @param {number} [organizerId] 
      * @param {string} [description] 
      * @param {string} [imageUrl] 
+     * @param {number} [price] 
+     * @param {number} [quantity] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EventApi
      */
-    public apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, options?: RawAxiosRequestConfig) {
-        return EventApiFp(this.configuration).apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, options).then((request) => request(this.axios, this.basePath));
+    public apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options?: RawAxiosRequestConfig) {
+        return EventApiFp(this.configuration).apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, price, quantity, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

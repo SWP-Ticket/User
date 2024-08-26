@@ -53,7 +53,7 @@ const Footer = (): React.JSX.Element => {
         )}
       </div>
       <div className='copy'>
-        <span>&copy; 2024 - Modern ticketing</span>
+        <span>&copy; 2024 - Ticketer</span>
         <div className='terms'>
           <Link href='/legal/privacy-policy'>Privacy policy</Link>
           &nbsp;&bull;&nbsp;

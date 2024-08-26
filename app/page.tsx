@@ -19,7 +19,7 @@ const Page = (): React.JSX.Element => {
     setLoading(true);
     try {
       const eventApi = new EventApi();
-      const response: any = await eventApi.apiEventGet(page, 10, searchTerm);
+      const response: any = await eventApi.apiEventGet(page, 100, searchTerm);
       const data = response.data;
       setEvents(data.data.listData);
       setTotalPages(data.totalPage);

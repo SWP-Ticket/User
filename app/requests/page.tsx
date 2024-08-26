@@ -1,4 +1,3 @@
-// app/requests/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -25,21 +24,24 @@ interface Event {
 const Page: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [pageSize] = useState<number>(10); // Set the page size
+  const [pageSize, setPageSize] = useState<number>(5); // Set the page size
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchAndSetEvents = async (page: number, pageSize: number) => {
+    setLoading(true);
     const organizerId = sessionStorage.getItem('id');
     if (organizerId) {
       try {
-        setLoading(true);
         const eventApi = new EventApi();
         const eventsData = await eventApi.apiEventOrganizerOrganizerIdGet(
           Number(organizerId),
           page,
           pageSize
         );
+        console.log(eventsData);
+
+        // Update state with event data and total pages
         //@ts-ignore
         setEvents(eventsData.data.data.listData);
         //@ts-ignore
@@ -54,7 +56,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     fetchAndSetEvents(page, pageSize);
-  }, [page]);
+  }, [page, pageSize]); // Fetch data whenever page or pageSize changes
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -65,7 +67,7 @@ const Page: React.FC = () => {
       <Header />
       <Box>
         <Typography variant='h3' gutterBottom display={'flex'} justifyContent={'center'}>
-          My Event List
+          My event list
         </Typography>
       </Box>
       {loading ? (

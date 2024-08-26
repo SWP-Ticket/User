@@ -5,11 +5,13 @@ interface IProps {
   name: string;
   type: string;
   value?: string;
-  maxLength: number;
+  maxLength?: number;
   disabled?: boolean;
   required?: boolean;
   placeholder: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  min?: string | number; // Minimum value for number inputs
+  max?: string | number; // Maximum value for number inputs
 }
 
 const Input = ({
@@ -21,6 +23,8 @@ const Input = ({
   required,
   placeholder,
   onChange,
+  min,
+  max, // Include max in destructuring
 }: IProps): React.JSX.Element => (
   <input
     id={name}
@@ -35,6 +39,8 @@ const Input = ({
     className='input-text'
     placeholder={placeholder}
     onChange={onChange}
+    min={min} // Add min to input element
+    max={max} // Add max to input element
   />
 );
 

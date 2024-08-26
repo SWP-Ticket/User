@@ -5,6 +5,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import useAlert from '@hooks/useAlert';
 import Input from '@components/Form/Input';
 import { EventApi, VenueApi } from 'api'; // Import the VenueApi
+import { format, toZonedTime } from 'date-fns-tz';
 
 interface IFormProps {
   title: string;
@@ -14,6 +15,9 @@ interface IFormProps {
   venueId: string;
   imageUrl: string;
   organizerId: string;
+  price: number;
+  quantity: number;
+  saleEndDate: Date;
 }
 
 interface IVenue {
@@ -22,16 +26,9 @@ interface IVenue {
 }
 
 const CreateEventPage = (): React.JSX.Element => {
-  const { showAlert } = useAlert();
-  const organizerId = sessionStorage.getItem('organizerId') || '';
+  const organizerId = sessionStorage.getItem('id') || '';
+  const timeZone = 'Asia/Bangkok'; // UTC+7 timezone
 
-  useEffect(() => {
-    const role = sessionStorage.getItem('role');
-    if (role !== 'Organizer') {
-      window.location.href = '/';
-      showAlert({ type: 'error', text: 'You are not allowed' });
-    }
-  }, [showAlert]);
   const [formValues, setFormValues] = useState<IFormProps>({
     title: '',
     description: '',
@@ -40,23 +37,23 @@ const CreateEventPage = (): React.JSX.Element => {
     venueId: '',
     imageUrl: '',
     organizerId: organizerId,
+    price: 0,
+    quantity: 0,
+    saleEndDate: new Date(),
   });
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [venues, setVenues] = useState<IVenue[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const { showAlert, hideAlert } = useAlert();
 
-  console.log('Organizer ID:', formValues.organizerId);
-  console.log('Venue ID:', formValues.venueId);
-  console.log(formValues);
-  console.log(venues);
   useEffect(() => {
     const fetchVenues = async () => {
       try {
         const venueApi = new VenueApi();
         const response = await venueApi.apiVenueGet();
-        // @ts-ignore
+        //@ts-ignore
         setVenues(response.data.data.listData);
       } catch (error) {
         showAlert({ type: 'error', text: 'Failed to fetch venues.' });
@@ -71,13 +68,13 @@ const CreateEventPage = (): React.JSX.Element => {
 
     if (file) {
       setImageFile(file);
-
       const previewUrl = URL.createObjectURL(file);
       setImagePreviewUrl(previewUrl);
     } else {
       console.log('No file selected');
     }
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name === 'startDate' || name === 'endDate') {
@@ -88,7 +85,7 @@ const CreateEventPage = (): React.JSX.Element => {
     } else if (name === 'venueId') {
       setFormValues({
         ...formValues,
-        [name]: value, // Convert string to number
+        [name]: value, // Keep as string
       });
     } else {
       setFormValues({
@@ -109,6 +106,7 @@ const CreateEventPage = (): React.JSX.Element => {
       return downloadUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
+      showAlert({ type: 'error', text: 'Error uploading image.' });
       return null;
     }
   };
@@ -128,14 +126,18 @@ const CreateEventPage = (): React.JSX.Element => {
           Number(organizerId),
           Number(formValues.venueId),
           formValues.description,
-          imageUrl
+          imageUrl,
+          formValues.price,
+          formValues.quantity
         );
         console.log(response);
         showAlert({ type: 'success', text: 'Event created successfully!' });
+        window.location.href = '/';
       } else {
         showAlert({ type: 'error', text: 'Failed to upload image.' });
       }
     } catch (error) {
+      console.log(error);
       showAlert({ type: 'error', text: 'Failed to create event.' });
     } finally {
       setLoading(false);
@@ -221,11 +223,12 @@ const CreateEventPage = (): React.JSX.Element => {
         </label>
         <div style={{ marginBottom: '16px' }}>
           <Input
-            type='date'
+            type='datetime-local'
             name='startDate'
             maxLength={128}
-            value={formValues.startDate.toISOString().split('T')[0]} // Convert Date to string for display
+            value={format(toZonedTime(formValues.startDate, timeZone), "yyyy-MM-dd'T'HH:mm")}
             placeholder='Enter start date'
+            min={format(toZonedTime(new Date(), timeZone), "yyyy-MM-dd'T'HH:mm")}
             required
             onChange={handleChange}
           />
@@ -237,10 +240,11 @@ const CreateEventPage = (): React.JSX.Element => {
         </label>
         <div style={{ marginBottom: '16px' }}>
           <Input
-            type='date'
+            type='datetime-local'
             name='endDate'
             maxLength={128}
-            value={formValues.endDate.toISOString().split('T')[0]} // Convert Date to string for display
+            value={format(toZonedTime(formValues.endDate, timeZone), "yyyy-MM-dd'T'HH:mm")}
+            min={format(toZonedTime(new Date(), timeZone), "yyyy-MM-dd'T'HH:mm")}
             placeholder='Enter end date'
             required
             onChange={handleChange}
@@ -272,33 +276,57 @@ const CreateEventPage = (): React.JSX.Element => {
       </div>
       <div>
         <label htmlFor='image' style={labelStyle}>
-          Upload Image
+          Event Image
         </label>
-        <input
-          type='file'
-          name='image'
-          accept='image/*'
-          onChange={handleImageChange}
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '4px',
-            border: '1px solid #ddd',
-            marginBottom: '16px',
-          }}
-        />
+        <input type='file' name='image' accept='image/*' onChange={handleImageChange} />
+        {imagePreviewUrl && (
+          <img
+            src={imagePreviewUrl}
+            alt='Preview'
+            style={{ maxWidth: '100%', marginTop: '16px' }}
+          />
+        )}
       </div>
-      {imagePreviewUrl && (
-        <img
-          src={imagePreviewUrl}
-          alt='Selected Image'
-          style={{ maxWidth: '100%', marginTop: '10px' }}
-        />
-      )}
+      <h2>Ticket</h2>
+      <div>
+        <label htmlFor='title' style={labelStyle}>
+          Price
+        </label>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            type='number'
+            name='price'
+            value={formValues.price.toString()}
+            placeholder='Enter ticket price'
+            min={10000}
+            max={9999999}
+            required
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+      <div>
+        <label htmlFor='title' style={labelStyle}>
+          Quantity
+        </label>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            type='number'
+            name='quantity'
+            value={formValues.quantity.toString()}
+            maxLength={128}
+            placeholder='Enter quantity'
+            min={10}
+            max={200}
+            required
+            onChange={handleChange}
+          />
+        </div>
+      </div>
       <button
         type='submit'
+        style={loading ? { ...buttonStyle, ...buttonDisabledStyle } : buttonStyle}
         disabled={loading}
-        style={{ ...buttonStyle, ...(loading ? buttonDisabledStyle : {}) }}
       >
         {loading ? 'Creating...' : 'Create Event'}
       </button>

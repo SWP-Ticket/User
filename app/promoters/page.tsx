@@ -43,8 +43,8 @@ const Page = (): React.JSX.Element => (
           <Heading type={5} color='gray' text='Sustainable ticketing' />
           <p className='gray form-information'>
             Stunning, white-labelled pages to promote your event. To get started selling tickets
-            online with Modern ticketing, you&apos;ll first create a beautiful event website to
-            promote your event.
+            online with Ticketer, you&apos;ll first create a beautiful event website to promote your
+            event.
           </p>
           <div className='button-container'>
             <ButtonLink
@@ -62,7 +62,7 @@ const Page = (): React.JSX.Element => (
       <div className='container'>
         <div className='center'>
           <Heading type={5} color='gray' text='How it works?' />
-          <p className='gray'>100% Modern Ticketing backed guarantee.</p>
+          <p className='gray'>100% Ticketer backed guarantee.</p>
         </div>
       </div>
 
@@ -109,19 +109,19 @@ const Page = (): React.JSX.Element => (
 
 const title = 'Promoters';
 const canonical = 'https://modern-ticketing.com/promoters';
-const description = 'Modern ticketing is a modern ticketing solution';
+const description = 'Ticketer is a Ticketer solution';
 
 export const metadata: Metadata = {
   title,
   description,
-  keywords: 'modern ticketing',
+  keywords: 'Ticketer',
   alternates: { canonical },
   openGraph: {
     title,
     description,
     url: canonical,
     type: 'website',
-    siteName: 'Modern Ticketing',
+    siteName: 'Ticketer',
     images: 'https://modern-ticketing.com/logo192.png',
   },
 };
