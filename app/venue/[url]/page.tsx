@@ -80,63 +80,6 @@ const Page = (): React.JSX.Element => (
         </div>
       </div>
     </Section>
-
-    <CardGroup url='list' title='Event in this venue' color='gray' background='gray'>
-      <EventCard
-        url='1'
-        from='20'
-        color='orange'
-        when='Tue, Sep 21, 2024 19:00'
-        name='Event name goes here'
-        venue='Royal Albert Hall'
-        image='https://images.unsplash.com/photo-1531058020387-3be344556be6?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-      />
-      <EventCard
-        url='1'
-        from='25'
-        color='orange'
-        when='Wed, Aug 9, 2024 22:00'
-        name='Event name goes here'
-        venue='o2 Arena'
-        image='https://images.unsplash.com/photo-1472691681358-fdf00a4bfcfe?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-      />
-      <EventCard
-        url='1'
-        from='10'
-        color='orange'
-        when='Sun, Mar 14, 2024 15:00'
-        name='Event name goes here'
-        venue='Wembley Stadium'
-        image='https://images.unsplash.com/photo-1561489396-888724a1543d?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-      />
-      <EventCard
-        url='1'
-        from='60'
-        color='orange'
-        when='Mon, Jul 2, 2024 20:00'
-        name='Event name goes here'
-        venue='Eventim Apollo'
-        image='https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-      />
-      <EventCard
-        url='1'
-        from='20'
-        color='orange'
-        when='Tue, Sep 21, 2024 19:00'
-        name='Event name goes here'
-        venue='Royal Albert Hall'
-        image='https://images.unsplash.com/photo-1531058020387-3be344556be6?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-      />
-      <EventCard
-        url='1'
-        from='25'
-        color='orange'
-        when='Wed, Aug 9, 2024 22:00'
-        name='Event name goes here'
-        venue='o2 Arena'
-        image='https://images.unsplash.com/photo-1472691681358-fdf00a4bfcfe?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-      />
-    </CardGroup>
   </Master>
 );
 

@@ -19,7 +19,7 @@ const Page = (): React.JSX.Element => (
       </div>
     </Section>
 
-    <Section className='list-cards'>
+    {/* <Section className='list-cards'>
       <div className='container center'>
         <EventCard
           url='1'
@@ -76,7 +76,7 @@ const Page = (): React.JSX.Element => (
           image='https://images.unsplash.com/photo-1472691681358-fdf00a4bfcfe?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
         />
       </div>
-    </Section>
+    </Section> */}
   </Master>
 );
 

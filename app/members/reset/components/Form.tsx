@@ -10,9 +10,6 @@ import Input from '@components/Form/Input';
 import Button from '@components/Button/Button';
 import Loader from '@components/Loader/Loader';
 
-// utils
-import Request, { type IRequest, type IResponse } from '@utils/Request';
-
 // interfaces
 interface IFormProps {
   newPassword: string;
@@ -55,47 +52,32 @@ const Form = (): React.JSX.Element => {
    * @param {FormEvent<HTMLFormElement>} e - The form submission event.
    * @returns {Promise<any>} A promise that resolves when the request is complete.
    */
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
+  // const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<any> => {
+  //   e.preventDefault();
 
-    hideAlert();
+  //   hideAlert();
 
-    setLoading(true);
+  //   setLoading(true);
 
-    const parameters: IRequest = {
-      url: 'v1/signin/password',
-      method: 'POST',
-      postData: {
-        email: '',
-        password: '',
-      },
-    };
+  //   const req: IResponse = await Request.getResponse(parameters);
 
-    const req: IResponse = await Request.getResponse(parameters);
+  //   const { status, data } = req;
 
-    const { status, data } = req;
+  //   if (status === 200) {
+  //     //
+  //   } else {
+  //     showAlert({ type: 'error', text: data.title ?? '' });
+  //   }
 
-    if (status === 200) {
-      //
-    } else {
-      showAlert({ type: 'error', text: data.title ?? '' });
-    }
-
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
   if (loading) {
     return <Loader type='inline' color='gray' text='Hang on a second' />;
   }
 
   return (
-    <form
-      className='form shrink'
-      noValidate
-      onSubmit={(e) => {
-        void handleSubmit(e);
-      }}
-    >
+    <form className='form shrink' noValidate onSubmit={(e) => {}}>
       <div className='form-elements'>
         <div className='form-line'>
           <div className='label-line flex flex-v-center flex-space-between'>
