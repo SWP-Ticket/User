@@ -14,7 +14,7 @@ const Page = (): React.JSX.Element => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(100);
   const [loading, setLoading] = useState<boolean>(true);
-  // console.log(events);
+  console.log(events);
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     try {
@@ -64,6 +64,14 @@ const Page = (): React.JSX.Element => {
             venue={event.venueName}
             image={event.imageURL}
             status={event.status}
+            ticket={
+              event.ticket
+                ? {
+                    price: event.ticket.price,
+                    quantity: event.ticket.quantity,
+                  }
+                : { price: 0, quantity: 0 }
+            } // Fallback in case ticket is missing
           />
         ))}
       </CardGroup>
