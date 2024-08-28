@@ -88,6 +88,8 @@ const TicketForm = ({ eventId }: IProps): React.JSX.Element => {
         {tickets.length > 0 ? (
           tickets.map((ticket) => (
             <div key={ticket.id} className='ticket-item'>
+              Price: {ticket.price}
+              Quantity: {ticket.quantity}
               {ticket.quantity === 0 && <p className='sold-out'>Sold Out</p>}
             </div>
           ))

@@ -57,7 +57,7 @@ const CreateEventPage = (): React.JSX.Element => {
     venueId: '',
     imageUrl: '',
     organizerId: organizerId,
-    price: 20000,
+    price: 0,
     quantity: 0,
     host: '',
     presenter: '',
@@ -73,7 +73,7 @@ const CreateEventPage = (): React.JSX.Element => {
       try {
         // Assuming there's a StaffApi to fetch staff members
         const staffApi = new UserApi();
-        const response = await staffApi.apiUserStaffGet(); // Update with correct API call
+        const response = await staffApi.apiUserStaffGet(1, 100); // Update with correct API call
         //@ts-ignore
         setStaffMembers(response.data.data.listData);
       } catch (error) {
@@ -163,8 +163,9 @@ const CreateEventPage = (): React.JSX.Element => {
           formValues.startDate.toISOString(),
           formValues.endDate.toISOString(),
           Number(organizerId),
-          Number(formValues.venueId),
+          Number(formValues.staffId),
           formValues.description,
+          Number(formValues.venueId),
           imageUrl,
           formValues.price,
           formValues.quantity

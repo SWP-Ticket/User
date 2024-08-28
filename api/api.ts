@@ -51,6 +51,68 @@ export interface AttendeeDetailRegisterDto {
 /**
  * 
  * @export
+ * @interface AttendeeDetailTransactionDto
+ */
+export interface AttendeeDetailTransactionDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof AttendeeDetailTransactionDto
+     */
+    'attendeeDetailId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AttendeeDetailTransactionDto
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AttendeeDetailTransactionDto
+     */
+    'email'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface AttendeeTransactionDto
+ */
+export interface AttendeeTransactionDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof AttendeeTransactionDto
+     */
+    'attendeeId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AttendeeTransactionDto
+     */
+    'registrationDate'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AttendeeTransactionDto
+     */
+    'paymentStatus'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AttendeeTransactionDto
+     */
+    'checkInCode'?: string | null;
+    /**
+     * 
+     * @type {Array<AttendeeDetailTransactionDto>}
+     * @memberof AttendeeTransactionDto
+     */
+    'attendeeDetails'?: Array<AttendeeDetailTransactionDto> | null;
+}
+/**
+ * 
+ * @export
  * @interface BoothRequestStatusDTO
  */
 export interface BoothRequestStatusDTO {
@@ -135,25 +197,31 @@ export interface CreateEventDTO {
      * @type {string}
      * @memberof CreateEventDTO
      */
-    'title': string;
+    'title'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreateEventDTO
      */
-    'startDate': string;
+    'startDate'?: string;
     /**
      * 
      * @type {string}
      * @memberof CreateEventDTO
      */
-    'endDate': string;
+    'endDate'?: string;
     /**
      * 
      * @type {number}
      * @memberof CreateEventDTO
      */
     'organizerId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateEventDTO
+     */
+    'staffId'?: number | null;
     /**
      * 
      * @type {string}
@@ -165,7 +233,7 @@ export interface CreateEventDTO {
      * @type {number}
      * @memberof CreateEventDTO
      */
-    'venueId': number;
+    'venueId'?: number;
     /**
      * 
      * @type {string}
@@ -184,6 +252,18 @@ export interface CreateEventDTO {
      * @memberof CreateEventDTO
      */
     'quantity'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEventDTO
+     */
+    'presenter'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEventDTO
+     */
+    'host'?: string | null;
 }
 /**
  * 
@@ -209,24 +289,6 @@ export interface CreateEventDTOServiceResponse {
      * @memberof CreateEventDTOServiceResponse
      */
     'message'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateEventDTOServiceResponse
-     */
-    'error'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateEventDTOServiceResponse
-     */
-    'hint'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateEventDTOServiceResponse
-     */
-    'priceTotal'?: number;
     /**
      * 
      * @type {Array<string>}
@@ -601,6 +663,12 @@ export interface TransactionDto {
      * @memberof TransactionDto
      */
     'status'?: string | null;
+    /**
+     * 
+     * @type {AttendeeTransactionDto}
+     * @memberof TransactionDto
+     */
+    'attendee'?: AttendeeTransactionDto;
 }
 /**
  * 
@@ -656,25 +724,43 @@ export interface UpdateEventDTO {
      * @type {number}
      * @memberof UpdateEventDTO
      */
-    'venueId'?: number;
+    'venueId'?: number | null;
     /**
      * 
      * @type {string}
      * @memberof UpdateEventDTO
      */
-    'startDate'?: string;
+    'startDate'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof UpdateEventDTO
      */
-    'endDate'?: string;
+    'endDate'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof UpdateEventDTO
      */
     'imageUrl'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateEventDTO
+     */
+    'staffId'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateEventDTO
+     */
+    'presenter'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateEventDTO
+     */
+    'host'?: string | null;
 }
 /**
  * 
@@ -700,24 +786,6 @@ export interface UpdateEventDTOServiceResponse {
      * @memberof UpdateEventDTOServiceResponse
      */
     'message'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateEventDTOServiceResponse
-     */
-    'error'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateEventDTOServiceResponse
-     */
-    'hint'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof UpdateEventDTOServiceResponse
-     */
-    'priceTotal'?: number;
     /**
      * 
      * @type {Array<string>}
@@ -769,19 +837,6 @@ export interface UserUpdateDTO {
      */
     'email'?: string | null;
 }
-/**
- * 
- * @export
- * @interface VenueStatusDTO
- */
-export interface VenueStatusDTO {
-    /**
-     * 
-     * @type {string}
-     * @memberof VenueStatusDTO
-     */
-    'status'?: string | null;
-}
 
 /**
  * AttendeeApi - axios parameter creator
@@ -823,78 +878,6 @@ export const AttendeeApiAxiosParamCreator = function (configuration?: Configurat
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiAttendeeCheckinQrPost: async (body?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Attendee/checkin/qr`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Bearer required
-            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {number} eventId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiAttendeeEventEventIdAttendeesExportGet: async (eventId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'eventId' is not null or undefined
-            assertParamExists('apiAttendeeEventEventIdAttendeesExportGet', 'eventId', eventId)
-            const localVarPath = `/api/Attendee/event/{eventId}/attendees/export`
-                .replace(`{${"eventId"}}`, encodeURIComponent(String(eventId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Bearer required
-            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1116,30 +1099,6 @@ export const AttendeeApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiAttendeeCheckinQrPost(body?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAttendeeCheckinQrPost(body, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AttendeeApi.apiAttendeeCheckinQrPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {number} eventId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiAttendeeEventEventIdAttendeesExportGet(eventId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAttendeeEventEventIdAttendeesExportGet(eventId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AttendeeApi.apiAttendeeEventEventIdAttendeesExportGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {number} eventId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1222,24 +1181,6 @@ export const AttendeeApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @param {string} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiAttendeeCheckinQrPost(body?: string, options?: any): AxiosPromise<void> {
-            return localVarFp.apiAttendeeCheckinQrPost(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {number} eventId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiAttendeeEventEventIdAttendeesExportGet(eventId: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiAttendeeEventEventIdAttendeesExportGet(eventId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {number} eventId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1305,28 +1246,6 @@ export class AttendeeApi extends BaseAPI {
      */
     public apiAttendeeAttendeeIdCheckinPut(attendeeId: number, body?: string, options?: RawAxiosRequestConfig) {
         return AttendeeApiFp(this.configuration).apiAttendeeAttendeeIdCheckinPut(attendeeId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {string} [body] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AttendeeApi
-     */
-    public apiAttendeeCheckinQrPost(body?: string, options?: RawAxiosRequestConfig) {
-        return AttendeeApiFp(this.configuration).apiAttendeeCheckinQrPost(body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {number} eventId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AttendeeApi
-     */
-    public apiAttendeeEventEventIdAttendeesExportGet(eventId: number, options?: RawAxiosRequestConfig) {
-        return AttendeeApiFp(this.configuration).apiAttendeeEventEventIdAttendeesExportGet(eventId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1811,6 +1730,42 @@ export const BoothApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {number} requestId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBoothRequestRequestIdGet: async (requestId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'requestId' is not null or undefined
+            assertParamExists('apiBoothRequestRequestIdGet', 'requestId', requestId)
+            const localVarPath = `/api/Booth/Request/{requestId}`
+                .replace(`{${"requestId"}}`, encodeURIComponent(String(requestId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1899,6 +1854,18 @@ export const BoothApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['BoothApi.apiBoothPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {number} requestId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBoothRequestRequestIdGet(requestId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBoothRequestRequestIdGet(requestId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BoothApi.apiBoothRequestRequestIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -1968,6 +1935,15 @@ export const BoothApiFactory = function (configuration?: Configuration, basePath
          */
         apiBoothPost(createBoothDTO?: CreateBoothDTO, options?: any): AxiosPromise<void> {
             return localVarFp.apiBoothPost(createBoothDTO, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} requestId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBoothRequestRequestIdGet(requestId: number, options?: any): AxiosPromise<void> {
+            return localVarFp.apiBoothRequestRequestIdGet(requestId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2049,6 +2025,17 @@ export class BoothApi extends BaseAPI {
      */
     public apiBoothPost(createBoothDTO?: CreateBoothDTO, options?: RawAxiosRequestConfig) {
         return BoothApiFp(this.configuration).apiBoothPost(createBoothDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} requestId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BoothApi
+     */
+    public apiBoothRequestRequestIdGet(requestId: number, options?: RawAxiosRequestConfig) {
+        return BoothApiFp(this.configuration).apiBoothRequestRequestIdGet(requestId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2541,47 +2528,6 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
-         * @summary Assigns a staff member to an event.
-         * @param {number} staffId The ID of the staff member.
-         * @param {number} eventId The ID of the event.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiEventEventIdStaffStaffIdPost: async (staffId: number, eventId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'staffId' is not null or undefined
-            assertParamExists('apiEventEventIdStaffStaffIdPost', 'staffId', staffId)
-            // verify required parameter 'eventId' is not null or undefined
-            assertParamExists('apiEventEventIdStaffStaffIdPost', 'eventId', eventId)
-            const localVarPath = `/api/Event/{eventId}/staff/{staffId}`
-                .replace(`{${"staffId"}}`, encodeURIComponent(String(staffId)))
-                .replace(`{${"eventId"}}`, encodeURIComponent(String(eventId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Bearer required
-            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary Change the status of an event by admin.
          * @param {number} eventId ID of the event to update.
          * @param {ChangeEventStatusDTO} [changeEventStatusDTO] Event status details.
@@ -2633,6 +2579,59 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
          */
         apiEventGet: async (page?: number, pageSize?: number, search?: string, sort?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Event`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['pageSize'] = pageSize;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (sort !== undefined) {
+                localVarQueryParameter['sort'] = sort;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Retrieves events for guests.
+         * @param {number} [page] The page number for pagination.
+         * @param {number} [pageSize] The number of events per page.
+         * @param {string} [search] The search term to filter events by title.
+         * @param {string} [sort] The sorting criteria (e.g., \&quot;startdate\&quot;, \&quot;enddate\&quot;).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiEventGuestEventsGet: async (page?: number, pageSize?: number, search?: string, sort?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Event/guest-events`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2758,10 +2757,13 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
          * @param {string} [startDate] 
          * @param {string} [endDate] 
          * @param {string} [imageUrl] 
+         * @param {number} [staffId] 
+         * @param {string} [presenter] 
+         * @param {string} [host] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventIdPut: async (id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiEventIdPut: async (id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, staffId?: number, presenter?: string, host?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('apiEventIdPut', 'id', id)
             const localVarPath = `/api/Event/{id}`
@@ -2804,6 +2806,18 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
     
             if (imageUrl !== undefined) { 
                 localVarFormParams.append('ImageUrl', imageUrl as any);
+            }
+    
+            if (staffId !== undefined) { 
+                localVarFormParams.append('StaffId', staffId as any);
+            }
+    
+            if (presenter !== undefined) { 
+                localVarFormParams.append('Presenter', presenter as any);
+            }
+    
+            if (host !== undefined) { 
+                localVarFormParams.append('Host', host as any);
             }
     
     
@@ -2868,27 +2882,22 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Sample request:        POST /api/Event      {         \"title\": \"Sample Event\",         \"startDate\": \"2024-08-15T00:00:00Z\",         \"endDate\": \"2024-08-16T00:00:00Z\",         \"organizerId\": 1,         \"venueId\": 1,         \"description\": \"Event Description\",         \"imageUrl\": \"example.jpg\"      }
          * @summary Create a new event.
-         * @param {string} title 
-         * @param {string} startDate 
-         * @param {string} endDate 
-         * @param {number} venueId 
+         * @param {string} [title] 
+         * @param {string} [startDate] 
+         * @param {string} [endDate] 
          * @param {number} [organizerId] 
+         * @param {number} [staffId] 
          * @param {string} [description] 
+         * @param {number} [venueId] 
          * @param {string} [imageUrl] 
          * @param {number} [price] 
          * @param {number} [quantity] 
+         * @param {string} [presenter] 
+         * @param {string} [host] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventPost: async (title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'title' is not null or undefined
-            assertParamExists('apiEventPost', 'title', title)
-            // verify required parameter 'startDate' is not null or undefined
-            assertParamExists('apiEventPost', 'startDate', startDate)
-            // verify required parameter 'endDate' is not null or undefined
-            assertParamExists('apiEventPost', 'endDate', endDate)
-            // verify required parameter 'venueId' is not null or undefined
-            assertParamExists('apiEventPost', 'venueId', venueId)
+        apiEventPost: async (title?: string, startDate?: string, endDate?: string, organizerId?: number, staffId?: number, description?: string, venueId?: number, imageUrl?: string, price?: number, quantity?: number, presenter?: string, host?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Event`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2922,6 +2931,10 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
                 localVarFormParams.append('OrganizerId', organizerId as any);
             }
     
+            if (staffId !== undefined) { 
+                localVarFormParams.append('StaffId', staffId as any);
+            }
+    
             if (description !== undefined) { 
                 localVarFormParams.append('Description', description as any);
             }
@@ -2940,6 +2953,14 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
     
             if (quantity !== undefined) { 
                 localVarFormParams.append('Quantity', quantity as any);
+            }
+    
+            if (presenter !== undefined) { 
+                localVarFormParams.append('Presenter', presenter as any);
+            }
+    
+            if (host !== undefined) { 
+                localVarFormParams.append('Host', host as any);
             }
     
     
@@ -2994,7 +3015,8 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} status 
+         * @summary Retrieves events by their status.
+         * @param {string} status The status of the events to retrieve. Allowed values are \&#39;Pending\&#39;, \&#39;Active\&#39;, \&#39;Cancel\&#39;, \&#39;OnGoing\&#39; and \&#39;Ended\&#39;.
          * @param {number} [page] 
          * @param {number} [pageSize] 
          * @param {*} [options] Override http request option.
@@ -3050,20 +3072,6 @@ export const EventApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Assigns a staff member to an event.
-         * @param {number} staffId The ID of the staff member.
-         * @param {number} eventId The ID of the event.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiEventEventIdStaffStaffIdPost(staffId: number, eventId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventEventIdStaffStaffIdPost(staffId, eventId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['EventApi.apiEventEventIdStaffStaffIdPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @summary Change the status of an event by admin.
          * @param {number} eventId ID of the event to update.
          * @param {ChangeEventStatusDTO} [changeEventStatusDTO] Event status details.
@@ -3090,6 +3098,22 @@ export const EventApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventGet(page, pageSize, search, sort, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EventApi.apiEventGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Retrieves events for guests.
+         * @param {number} [page] The page number for pagination.
+         * @param {number} [pageSize] The number of events per page.
+         * @param {string} [search] The search term to filter events by title.
+         * @param {string} [sort] The sorting criteria (e.g., \&quot;startdate\&quot;, \&quot;enddate\&quot;).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiEventGuestEventsGet(page?: number, pageSize?: number, search?: string, sort?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventGuestEventsGet(page, pageSize, search, sort, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EventApi.apiEventGuestEventsGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -3128,11 +3152,14 @@ export const EventApiFp = function(configuration?: Configuration) {
          * @param {string} [startDate] 
          * @param {string} [endDate] 
          * @param {string} [imageUrl] 
+         * @param {number} [staffId] 
+         * @param {string} [presenter] 
+         * @param {string} [host] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiEventIdPut(id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateEventDTOServiceResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventIdPut(id, title, description, venueId, startDate, endDate, imageUrl, options);
+        async apiEventIdPut(id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, staffId?: number, presenter?: string, host?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateEventDTOServiceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventIdPut(id, title, description, venueId, startDate, endDate, imageUrl, staffId, presenter, host, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EventApi.apiEventIdPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3154,20 +3181,23 @@ export const EventApiFp = function(configuration?: Configuration) {
         /**
          * Sample request:        POST /api/Event      {         \"title\": \"Sample Event\",         \"startDate\": \"2024-08-15T00:00:00Z\",         \"endDate\": \"2024-08-16T00:00:00Z\",         \"organizerId\": 1,         \"venueId\": 1,         \"description\": \"Event Description\",         \"imageUrl\": \"example.jpg\"      }
          * @summary Create a new event.
-         * @param {string} title 
-         * @param {string} startDate 
-         * @param {string} endDate 
-         * @param {number} venueId 
+         * @param {string} [title] 
+         * @param {string} [startDate] 
+         * @param {string} [endDate] 
          * @param {number} [organizerId] 
+         * @param {number} [staffId] 
          * @param {string} [description] 
+         * @param {number} [venueId] 
          * @param {string} [imageUrl] 
          * @param {number} [price] 
          * @param {number} [quantity] 
+         * @param {string} [presenter] 
+         * @param {string} [host] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateEventDTOServiceResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, price, quantity, options);
+        async apiEventPost(title?: string, startDate?: string, endDate?: string, organizerId?: number, staffId?: number, description?: string, venueId?: number, imageUrl?: string, price?: number, quantity?: number, presenter?: string, host?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateEventDTOServiceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventPost(title, startDate, endDate, organizerId, staffId, description, venueId, imageUrl, price, quantity, presenter, host, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EventApi.apiEventPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3187,7 +3217,8 @@ export const EventApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} status 
+         * @summary Retrieves events by their status.
+         * @param {string} status The status of the events to retrieve. Allowed values are \&#39;Pending\&#39;, \&#39;Active\&#39;, \&#39;Cancel\&#39;, \&#39;OnGoing\&#39; and \&#39;Ended\&#39;.
          * @param {number} [page] 
          * @param {number} [pageSize] 
          * @param {*} [options] Override http request option.
@@ -3211,17 +3242,6 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
-         * @summary Assigns a staff member to an event.
-         * @param {number} staffId The ID of the staff member.
-         * @param {number} eventId The ID of the event.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiEventEventIdStaffStaffIdPost(staffId: number, eventId: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiEventEventIdStaffStaffIdPost(staffId, eventId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary Change the status of an event by admin.
          * @param {number} eventId ID of the event to update.
          * @param {ChangeEventStatusDTO} [changeEventStatusDTO] Event status details.
@@ -3243,6 +3263,19 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
          */
         apiEventGet(page?: number, pageSize?: number, search?: string, sort?: string, options?: any): AxiosPromise<void> {
             return localVarFp.apiEventGet(page, pageSize, search, sort, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Retrieves events for guests.
+         * @param {number} [page] The page number for pagination.
+         * @param {number} [pageSize] The number of events per page.
+         * @param {string} [search] The search term to filter events by title.
+         * @param {string} [sort] The sorting criteria (e.g., \&quot;startdate\&quot;, \&quot;enddate\&quot;).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiEventGuestEventsGet(page?: number, pageSize?: number, search?: string, sort?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiEventGuestEventsGet(page, pageSize, search, sort, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3274,11 +3307,14 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
          * @param {string} [startDate] 
          * @param {string} [endDate] 
          * @param {string} [imageUrl] 
+         * @param {number} [staffId] 
+         * @param {string} [presenter] 
+         * @param {string} [host] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventIdPut(id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, options?: any): AxiosPromise<UpdateEventDTOServiceResponse> {
-            return localVarFp.apiEventIdPut(id, title, description, venueId, startDate, endDate, imageUrl, options).then((request) => request(axios, basePath));
+        apiEventIdPut(id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, staffId?: number, presenter?: string, host?: string, options?: any): AxiosPromise<UpdateEventDTOServiceResponse> {
+            return localVarFp.apiEventIdPut(id, title, description, venueId, startDate, endDate, imageUrl, staffId, presenter, host, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3294,20 +3330,23 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
         /**
          * Sample request:        POST /api/Event      {         \"title\": \"Sample Event\",         \"startDate\": \"2024-08-15T00:00:00Z\",         \"endDate\": \"2024-08-16T00:00:00Z\",         \"organizerId\": 1,         \"venueId\": 1,         \"description\": \"Event Description\",         \"imageUrl\": \"example.jpg\"      }
          * @summary Create a new event.
-         * @param {string} title 
-         * @param {string} startDate 
-         * @param {string} endDate 
-         * @param {number} venueId 
+         * @param {string} [title] 
+         * @param {string} [startDate] 
+         * @param {string} [endDate] 
          * @param {number} [organizerId] 
+         * @param {number} [staffId] 
          * @param {string} [description] 
+         * @param {number} [venueId] 
          * @param {string} [imageUrl] 
          * @param {number} [price] 
          * @param {number} [quantity] 
+         * @param {string} [presenter] 
+         * @param {string} [host] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options?: any): AxiosPromise<CreateEventDTOServiceResponse> {
-            return localVarFp.apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, price, quantity, options).then((request) => request(axios, basePath));
+        apiEventPost(title?: string, startDate?: string, endDate?: string, organizerId?: number, staffId?: number, description?: string, venueId?: number, imageUrl?: string, price?: number, quantity?: number, presenter?: string, host?: string, options?: any): AxiosPromise<CreateEventDTOServiceResponse> {
+            return localVarFp.apiEventPost(title, startDate, endDate, organizerId, staffId, description, venueId, imageUrl, price, quantity, presenter, host, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3321,7 +3360,8 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {string} status 
+         * @summary Retrieves events by their status.
+         * @param {string} status The status of the events to retrieve. Allowed values are \&#39;Pending\&#39;, \&#39;Active\&#39;, \&#39;Cancel\&#39;, \&#39;OnGoing\&#39; and \&#39;Ended\&#39;.
          * @param {number} [page] 
          * @param {number} [pageSize] 
          * @param {*} [options] Override http request option.
@@ -3340,19 +3380,6 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class EventApi extends BaseAPI {
-    /**
-     * 
-     * @summary Assigns a staff member to an event.
-     * @param {number} staffId The ID of the staff member.
-     * @param {number} eventId The ID of the event.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EventApi
-     */
-    public apiEventEventIdStaffStaffIdPost(staffId: number, eventId: number, options?: RawAxiosRequestConfig) {
-        return EventApiFp(this.configuration).apiEventEventIdStaffStaffIdPost(staffId, eventId, options).then((request) => request(this.axios, this.basePath));
-    }
-
     /**
      * 
      * @summary Change the status of an event by admin.
@@ -3379,6 +3406,21 @@ export class EventApi extends BaseAPI {
      */
     public apiEventGet(page?: number, pageSize?: number, search?: string, sort?: string, options?: RawAxiosRequestConfig) {
         return EventApiFp(this.configuration).apiEventGet(page, pageSize, search, sort, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Retrieves events for guests.
+     * @param {number} [page] The page number for pagination.
+     * @param {number} [pageSize] The number of events per page.
+     * @param {string} [search] The search term to filter events by title.
+     * @param {string} [sort] The sorting criteria (e.g., \&quot;startdate\&quot;, \&quot;enddate\&quot;).
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EventApi
+     */
+    public apiEventGuestEventsGet(page?: number, pageSize?: number, search?: string, sort?: string, options?: RawAxiosRequestConfig) {
+        return EventApiFp(this.configuration).apiEventGuestEventsGet(page, pageSize, search, sort, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3415,12 +3457,15 @@ export class EventApi extends BaseAPI {
      * @param {string} [startDate] 
      * @param {string} [endDate] 
      * @param {string} [imageUrl] 
+     * @param {number} [staffId] 
+     * @param {string} [presenter] 
+     * @param {string} [host] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EventApi
      */
-    public apiEventIdPut(id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, options?: RawAxiosRequestConfig) {
-        return EventApiFp(this.configuration).apiEventIdPut(id, title, description, venueId, startDate, endDate, imageUrl, options).then((request) => request(this.axios, this.basePath));
+    public apiEventIdPut(id: number, title?: string, description?: string, venueId?: number, startDate?: string, endDate?: string, imageUrl?: string, staffId?: number, presenter?: string, host?: string, options?: RawAxiosRequestConfig) {
+        return EventApiFp(this.configuration).apiEventIdPut(id, title, description, venueId, startDate, endDate, imageUrl, staffId, presenter, host, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3439,21 +3484,24 @@ export class EventApi extends BaseAPI {
     /**
      * Sample request:        POST /api/Event      {         \"title\": \"Sample Event\",         \"startDate\": \"2024-08-15T00:00:00Z\",         \"endDate\": \"2024-08-16T00:00:00Z\",         \"organizerId\": 1,         \"venueId\": 1,         \"description\": \"Event Description\",         \"imageUrl\": \"example.jpg\"      }
      * @summary Create a new event.
-     * @param {string} title 
-     * @param {string} startDate 
-     * @param {string} endDate 
-     * @param {number} venueId 
+     * @param {string} [title] 
+     * @param {string} [startDate] 
+     * @param {string} [endDate] 
      * @param {number} [organizerId] 
+     * @param {number} [staffId] 
      * @param {string} [description] 
+     * @param {number} [venueId] 
      * @param {string} [imageUrl] 
      * @param {number} [price] 
      * @param {number} [quantity] 
+     * @param {string} [presenter] 
+     * @param {string} [host] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EventApi
      */
-    public apiEventPost(title: string, startDate: string, endDate: string, venueId: number, organizerId?: number, description?: string, imageUrl?: string, price?: number, quantity?: number, options?: RawAxiosRequestConfig) {
-        return EventApiFp(this.configuration).apiEventPost(title, startDate, endDate, venueId, organizerId, description, imageUrl, price, quantity, options).then((request) => request(this.axios, this.basePath));
+    public apiEventPost(title?: string, startDate?: string, endDate?: string, organizerId?: number, staffId?: number, description?: string, venueId?: number, imageUrl?: string, price?: number, quantity?: number, presenter?: string, host?: string, options?: RawAxiosRequestConfig) {
+        return EventApiFp(this.configuration).apiEventPost(title, startDate, endDate, organizerId, staffId, description, venueId, imageUrl, price, quantity, presenter, host, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3470,7 +3518,8 @@ export class EventApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} status 
+     * @summary Retrieves events by their status.
+     * @param {string} status The status of the events to retrieve. Allowed values are \&#39;Pending\&#39;, \&#39;Active\&#39;, \&#39;Cancel\&#39;, \&#39;OnGoing\&#39; and \&#39;Ended\&#39;.
      * @param {number} [page] 
      * @param {number} [pageSize] 
      * @param {*} [options] Override http request option.
@@ -5757,6 +5806,48 @@ export const TransactionApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @param {number} [page] 
+         * @param {number} [pageSize] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiTransactionGet: async (page?: number, pageSize?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Transaction`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['pageSize'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6004,6 +6095,19 @@ export const TransactionApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} [page] 
+         * @param {number} [pageSize] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiTransactionGet(page?: number, pageSize?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiTransactionGet(page, pageSize, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TransactionApi.apiTransactionGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6098,6 +6202,16 @@ export const TransactionApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @param {number} [page] 
+         * @param {number} [pageSize] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiTransactionGet(page?: number, pageSize?: number, options?: any): AxiosPromise<void> {
+            return localVarFp.apiTransactionGet(page, pageSize, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6172,6 +6286,18 @@ export class TransactionApi extends BaseAPI {
      */
     public apiTransactionAttendeesAttendeeIdTransactionsGet(attendeeId: number, options?: RawAxiosRequestConfig) {
         return TransactionApiFp(this.configuration).apiTransactionAttendeesAttendeeIdTransactionsGet(attendeeId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} [page] 
+     * @param {number} [pageSize] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TransactionApi
+     */
+    public apiTransactionGet(page?: number, pageSize?: number, options?: RawAxiosRequestConfig) {
+        return TransactionApiFp(this.configuration).apiTransactionGet(page, pageSize, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6948,46 +7074,6 @@ export const VenueApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
-         * @param {number} id 
-         * @param {VenueStatusDTO} [venueStatusDTO] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVenueChangeVenueStatusIdPut: async (id: number, venueStatusDTO?: VenueStatusDTO, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('apiVenueChangeVenueStatusIdPut', 'id', id)
-            const localVarPath = `/api/Venue/ChangeVenueStatus/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Bearer required
-            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(venueStatusDTO, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {number} [page] Page number.
          * @param {number} [pageSize] Number of Booths per page.
          * @param {string} [search] Search by Name, Status.
@@ -7198,19 +7284,6 @@ export const VenueApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {number} id 
-         * @param {VenueStatusDTO} [venueStatusDTO] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiVenueChangeVenueStatusIdPut(id: number, venueStatusDTO?: VenueStatusDTO, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiVenueChangeVenueStatusIdPut(id, venueStatusDTO, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['VenueApi.apiVenueChangeVenueStatusIdPut']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {number} [page] Page number.
          * @param {number} [pageSize] Number of Booths per page.
          * @param {string} [search] Search by Name, Status.
@@ -7285,16 +7358,6 @@ export const VenueApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
-         * @param {number} id 
-         * @param {VenueStatusDTO} [venueStatusDTO] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiVenueChangeVenueStatusIdPut(id: number, venueStatusDTO?: VenueStatusDTO, options?: any): AxiosPromise<void> {
-            return localVarFp.apiVenueChangeVenueStatusIdPut(id, venueStatusDTO, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {number} [page] Page number.
          * @param {number} [pageSize] Number of Booths per page.
          * @param {string} [search] Search by Name, Status.
@@ -7352,18 +7415,6 @@ export const VenueApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class VenueApi extends BaseAPI {
-    /**
-     * 
-     * @param {number} id 
-     * @param {VenueStatusDTO} [venueStatusDTO] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof VenueApi
-     */
-    public apiVenueChangeVenueStatusIdPut(id: number, venueStatusDTO?: VenueStatusDTO, options?: RawAxiosRequestConfig) {
-        return VenueApiFp(this.configuration).apiVenueChangeVenueStatusIdPut(id, venueStatusDTO, options).then((request) => request(this.axios, this.basePath));
-    }
-
     /**
      * 
      * @param {number} [page] Page number.

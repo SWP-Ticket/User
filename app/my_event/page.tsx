@@ -25,23 +25,27 @@ const statuColor: {
   OnGoing: 'primary',
   Ended: 'error',
 };
-
+const handleChange = (event, value) => {
+  setPage(value);
+  // Trigger data fetch or any other action when page changes
+};
 const Page: React.FC = () => {
   const [organizerId] = useState(+sessionStorage.getItem('id')!);
   const [eventList, setEventList] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
   useEffect(() => {
     const fetchEventList = async () => {
       const eventAPI = new EventApi();
-      const eventList = await eventAPI.apiEventOrganizerOrganizerIdGet(organizerId);
+      const eventList = await eventAPI.apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize);
       //@ts-ignore
       setEventList(eventList.data.data.listData);
       //@ts-ignore
       setTotalPages(eventList.data.data.totalPage);
     };
     fetchEventList();
-  }, [organizerId]);
+  }, [organizerId, page, pageSize]);
 
   return (
     <>
@@ -137,7 +141,7 @@ const Page: React.FC = () => {
           placeItems: 'center',
         }}
       >
-        <Pagination count={totalPages} color='primary' />
+        <Pagination page={page} count={totalPages} color='primary' onChange={handleChange} />
       </Box>
       <Footer />
     </>
