@@ -17,11 +17,9 @@ import type { Configuration } from './configuration';
 // @ts-ignore
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
+import BASE_URL from './baseURL';
 
-export const BASE_PATH = 'https://ticketswp-cvb4bhguf9fmbte2.eastus-01.azurewebsites.net'.replace(
-  /\/+$/,
-  ''
-);
+export const BASE_PATH = BASE_URL.replace(/\/+$/, '');
 
 /**
  *
