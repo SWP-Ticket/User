@@ -9,6 +9,7 @@ import useAlert from '@hooks/useAlert';
 import Button from '@components/Button/Button';
 import Loader from '@components/Loader/Loader';
 import { TicketApi } from 'api';
+import { Typography } from '@mui/material';
 
 // interfaces
 interface ITicket {
@@ -87,10 +88,46 @@ const TicketForm = ({ eventId }: IProps): React.JSX.Element => {
       <div className='ticket-box-content'>
         {tickets.length > 0 ? (
           tickets.map((ticket) => (
-            <div key={ticket.id} className='ticket-item'>
-              Price: {ticket.price}
-              Quantity: {ticket.quantity}
-              {ticket.quantity === 0 && <p className='sold-out'>Sold Out</p>}
+            <div
+              key={ticket.id}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '16px',
+                marginBottom: '16px',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                backgroundColor: '#f9f9f9',
+                transition: 'box-shadow 0.3s ease-in-out',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)')
+              }
+              onMouseOut={(e) => (e.currentTarget.style.boxShadow = 'none')}
+            >
+              <Typography style={{ marginBottom: '8px', fontWeight: 500, fontSize: '1rem' }}>
+                Price: {ticket.price}
+              </Typography>
+              <Typography style={{ marginBottom: '8px', fontWeight: 500, fontSize: '1rem' }}>
+                Quantity: {ticket.quantity}
+              </Typography>
+              {ticket.quantity === 0 && (
+                <p
+                  style={{
+                    color: '#ff4c4c',
+                    fontWeight: 'bold',
+                    fontSize: '1rem',
+                    textAlign: 'center',
+                    marginTop: '8px',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    backgroundColor: '#ffe0e0',
+                  }}
+                >
+                  Sold Out
+                </p>
+              )}
             </div>
           ))
         ) : (

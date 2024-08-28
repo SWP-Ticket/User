@@ -22,7 +22,7 @@ const Page = (): React.JSX.Element => {
     setLoading(true);
     try {
       const eventApi = new EventApi();
-      const response: any = await eventApi.apiEventGet(page, 100, searchTerm);
+      const response: any = await eventApi.apiEventGuestEventsGet(page, 100, searchTerm);
       const data = response.data;
       console.log(data);
       setEvents(data.data.listData);
@@ -78,7 +78,7 @@ const Page = (): React.JSX.Element => {
                     quantity: event.ticket.quantity,
                   }
                 : { price: 0, quantity: 0 }
-            } // Fallback in case ticket is missing
+            }
           />
         ))}
       </CardGroup>

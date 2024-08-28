@@ -11,6 +11,7 @@ import Heading from '@components/Heading/Heading';
 import EventCard from '@components/Card/EventCard';
 import CardGroup from '@components/Card/CardGroup';
 import TicketForm from './components/TicketForm';
+import { Typography } from '@mui/material';
 
 interface paginationResponse<T> {
   page: number;
@@ -53,6 +54,8 @@ interface EventDetail {
   endDate: Date;
   imageURL: string;
   status: string;
+  host: string;
+  presenter: string;
 }
 
 const Page = (): React.JSX.Element => {
@@ -121,30 +124,65 @@ const Page = (): React.JSX.Element => {
           <div
             style={{
               backgroundImage: `url(${event.imageURL})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              width: '150px',
+              height: '150px',
+              borderRadius: '50%',
+              margin: '0 auto',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
             }}
             className='cover-image image'
           />
           <Heading type={1} color='white' text={event.title} />
-          <Heading type={5} color='white' text={new Date(event.startDate).toLocaleDateString()} />
-          <Heading type={4} color='white' text={'to'} />
-          <Heading type={5} color='white' text={new Date(event.endDate).toLocaleDateString()} />
+          <Heading
+            type={5}
+            color='white'
+            text={`from ${new Date(event.startDate).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true, // This ensures AM/PM notation
+            })} to ${new Date(event.endDate).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true, // This ensures AM/PM notation
+            })}`}
+          />
+
           <Heading type={6} color='white' text={event.venueName} />
           <Heading type={6} color='white' text={event.status} />
         </div>
       </div>
       <Section className='white-background'>
-        <div className='container'>
-          <div className='event-details'>
-            <div>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '40px' }}>
+            <div style={{ flex: 1 }}>
+              <Typography variant='h5' style={{ fontWeight: '500', color: '#333' }}>
+                Host: <span style={{ color: '#FF5722' }}>{event.host}</span> <br /> Presenter:{' '}
+                <span style={{ color: '#FF5722' }}>{event.presenter}</span>
+              </Typography>
               <Heading type={4} color='gray' text='Event details' />
-              <div className='paragraph-container gray'>
+              <div style={{ marginTop: '10px', color: '#666', lineHeight: '1.6' }}>
                 <p>{event.description}</p>
               </div>
             </div>
-            <div>
+            <div style={{ flex: 1 }}>
               {!token && (
-                <div className='ticket-box'>
-                  <div className='ticket-box-header'>
+                <div
+                  style={{
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    padding: '20px',
+                    backgroundColor: '#f9f9f9',
+                  }}
+                >
+                  <div
+                    style={{
+                      borderBottom: '1px solid #ddd',
+                      paddingBottom: '10px',
+                      marginBottom: '10px',
+                    }}
+                  >
                     <Heading type={4} color='gray' text='Tickets' />
                   </div>
                   <TicketForm eventId={event.id} />
@@ -157,7 +195,7 @@ const Page = (): React.JSX.Element => {
 
       <Section className='white-background'>
         <div className='container'>
-          <Heading type={4} color='gray' text={`At` + ' ' + event.venueName} />
+          <Heading type={4} color='gray' text={`Location:` + ' ' + event.venueName} />
         </div>
       </Section>
 

@@ -2838,10 +2838,11 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
          * @param {number} organizerId 
          * @param {number} [page] 
          * @param {number} [pageSize] 
+         * @param {string} [search] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventOrganizerOrganizerIdGet: async (organizerId: number, page?: number, pageSize?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiEventOrganizerOrganizerIdGet: async (organizerId: number, page?: number, pageSize?: number, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'organizerId' is not null or undefined
             assertParamExists('apiEventOrganizerOrganizerIdGet', 'organizerId', organizerId)
             const localVarPath = `/api/Event/organizer/{organizerId}`
@@ -2866,6 +2867,10 @@ export const EventApiAxiosParamCreator = function (configuration?: Configuration
 
             if (pageSize !== undefined) {
                 localVarQueryParameter['pageSize'] = pageSize;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
             }
 
 
@@ -3169,11 +3174,12 @@ export const EventApiFp = function(configuration?: Configuration) {
          * @param {number} organizerId 
          * @param {number} [page] 
          * @param {number} [pageSize] 
+         * @param {string} [search] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiEventOrganizerOrganizerIdGet(organizerId: number, page?: number, pageSize?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize, options);
+        async apiEventOrganizerOrganizerIdGet(organizerId: number, page?: number, pageSize?: number, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize, search, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['EventApi.apiEventOrganizerOrganizerIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3321,11 +3327,12 @@ export const EventApiFactory = function (configuration?: Configuration, basePath
          * @param {number} organizerId 
          * @param {number} [page] 
          * @param {number} [pageSize] 
+         * @param {string} [search] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiEventOrganizerOrganizerIdGet(organizerId: number, page?: number, pageSize?: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize, options).then((request) => request(axios, basePath));
+        apiEventOrganizerOrganizerIdGet(organizerId: number, page?: number, pageSize?: number, search?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize, search, options).then((request) => request(axios, basePath));
         },
         /**
          * Sample request:        POST /api/Event      {         \"title\": \"Sample Event\",         \"startDate\": \"2024-08-15T00:00:00Z\",         \"endDate\": \"2024-08-16T00:00:00Z\",         \"organizerId\": 1,         \"venueId\": 1,         \"description\": \"Event Description\",         \"imageUrl\": \"example.jpg\"      }
@@ -3473,12 +3480,13 @@ export class EventApi extends BaseAPI {
      * @param {number} organizerId 
      * @param {number} [page] 
      * @param {number} [pageSize] 
+     * @param {string} [search] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EventApi
      */
-    public apiEventOrganizerOrganizerIdGet(organizerId: number, page?: number, pageSize?: number, options?: RawAxiosRequestConfig) {
-        return EventApiFp(this.configuration).apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize, options).then((request) => request(this.axios, this.basePath));
+    public apiEventOrganizerOrganizerIdGet(organizerId: number, page?: number, pageSize?: number, search?: string, options?: RawAxiosRequestConfig) {
+        return EventApiFp(this.configuration).apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize, search, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
