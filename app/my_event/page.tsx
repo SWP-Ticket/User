@@ -1,10 +1,9 @@
 'use client';
 import Footer from '@components/Footer/Footer';
 import Header from '@components/Header/Header';
-import { Box, Button, Chip, Pagination, Typography } from '@mui/material';
-import { EventApi } from 'api';
+import { Box, Chip, Pagination, Typography } from '@mui/material';
+import { EventApi, UserApi, VenueApi } from 'api';
 import React, { useEffect, useState } from 'react';
-import UpdateIcon from '@mui/icons-material/Update';
 import {
   Table,
   TableBody,
@@ -15,41 +14,84 @@ import {
   Paper,
 } from '@mui/material';
 import UpdatingEventModal from './component/UpdateModal';
+import Master from '@components/Layout/Master';
 
 const statuColor: {
   [key: string]: 'default' | 'success' | 'primary' | 'secondary' | 'error' | 'info' | 'warning';
 } = {
-  Cancel: 'warning',
+  Ready: 'info',
+  Cancelled: 'warning',
   Pending: 'secondary',
   Active: 'success',
   OnGoing: 'primary',
   Ended: 'error',
 };
-const handleChange = (event, value) => {
-  setPage(value);
-  // Trigger data fetch or any other action when page changes
-};
+
 const Page: React.FC = () => {
   const [organizerId] = useState(+sessionStorage.getItem('id')!);
   const [eventList, setEventList] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [venueList, setVenueList] = useState<[]>([]);
+  const [staffList, setStaffList] = useState<[]>([]);
+
+  useEffect(() => {
+    const fetchAllVenue = async () => {
+      const venueAPI = new VenueApi();
+      const venueResponse = await venueAPI.apiVenueGet(1, 1000);
+      //@ts-ignore
+      return venueResponse.data.data.listData;
+    };
+    const fetchAllStaff = async () => {
+      const staffAPI = new UserApi();
+      const staffResponse = await staffAPI.apiUserStaffGet(1, 1000);
+      //@ts-ignore
+      return staffResponse.data.data.listData;
+    };
+    (async () => {
+      try {
+        const [venueList, staffList] = await Promise.all([fetchAllVenue(), fetchAllStaff()]);
+        setVenueList(venueList);
+        setStaffList(staffList);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    })();
+  }, []);
+
   useEffect(() => {
     const fetchEventList = async () => {
       const eventAPI = new EventApi();
-      const eventList = await eventAPI.apiEventOrganizerOrganizerIdGet(organizerId, page, pageSize);
+      const eventList = await eventAPI.apiEventOrganizerOrganizerIdGet(organizerId);
       //@ts-ignore
       setEventList(eventList.data.data.listData);
       //@ts-ignore
       setTotalPages(eventList.data.data.totalPage);
     };
     fetchEventList();
-  }, [organizerId, page, pageSize]);
+  }, [organizerId]);
+
+  const handlePageChange = async (_event: React.ChangeEvent<unknown>, page: number) => {
+    const eventAPI = new EventApi();
+    const eventList = await eventAPI.apiEventOrganizerOrganizerIdGet(organizerId, page);
+    //@ts-ignore
+    setEventList(eventList.data.data.listData);
+    //@ts-ignore
+    setTotalPages(eventList.data.data.totalPage);
+    setPage(page);
+  };
+
+  const handleUpdate = async () => {
+    const eventAPI = new EventApi();
+    const eventList = await eventAPI.apiEventOrganizerOrganizerIdGet(organizerId, page);
+    //@ts-ignore
+    setEventList(eventList.data.data.listData);
+    //@ts-ignore
+    setTotalPages(eventList.data.data.totalPage);
+  };
 
   return (
-    <>
-      <Header />
+    <Master>
       <Typography
         variant='h3'
         gutterBottom
@@ -119,10 +161,15 @@ const Page: React.FC = () => {
                     sx={{ '& .MuiChip-label': { fontSize: '0.875rem', fontWeight: 'bold' } }}
                   />
                 </TableCell>
-                <TableCell style={{ textAlign: 'center' }}>{row.ticket.price}</TableCell>
-                <TableCell style={{ textAlign: 'center' }}>{row.ticket.quantity}</TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row.ticket?.price}</TableCell>
+                <TableCell style={{ textAlign: 'center' }}>{row.ticket?.quantity}</TableCell>
                 <TableCell style={{ textAlign: 'center' }}>
-                  <UpdatingEventModal />
+                  <UpdatingEventModal
+                    venueList={venueList}
+                    staffList={staffList}
+                    eventId={row.id}
+                    onUpdate={handleUpdate}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -141,10 +188,9 @@ const Page: React.FC = () => {
           placeItems: 'center',
         }}
       >
-        <Pagination page={page} count={totalPages} color='primary' onChange={handleChange} />
+        <Pagination count={totalPages} color='primary' onChange={handlePageChange} />
       </Box>
-      <Footer />
-    </>
+    </Master>
   );
 };
 

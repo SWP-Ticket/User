@@ -106,6 +106,11 @@ const Header = (): React.JSX.Element => {
             </Link>
           )}
           {role == 'Organizer' && (
+            <Link href='/my_event' className='gray'>
+              Update event
+            </Link>
+          )}
+          {role == 'Organizer' && (
             <Link href='/requests' className='gray'>
               Requests
             </Link>
