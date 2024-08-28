@@ -14,6 +14,9 @@ const Page = (): React.JSX.Element => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(100);
   const [loading, setLoading] = useState<boolean>(true);
+  const [boothName, setBoothName] = useState<string>('');
+  const [price, setPrice] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(0);
   // console.log(events);
   const fetchEvents = useCallback(async () => {
     setLoading(true);
@@ -21,8 +24,12 @@ const Page = (): React.JSX.Element => {
       const eventApi = new EventApi();
       const response: any = await eventApi.apiEventGet(page, 100, searchTerm);
       const data = response.data;
+      console.log(data);
       setEvents(data.data.listData);
       setTotalPages(data.totalPage);
+      setQuantity(data.data.listData.ticket.quantity);
+      setPrice(data.data.listData.ticket.price);
+      setBoothName(data.data.listData.boothName);
     } catch (error) {
       console.error('Failed to fetch events:', error);
     } finally {
